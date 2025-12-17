@@ -37,7 +37,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
           </button>
 
           {/* Data Points - Desktop */}
-          <div className="hidden lg:flex items-center gap-4 font-mono text-[10px] tracking-widest text-foreground/60 border-l border-foreground/10 pl-6">
+          <div className="hidden lg:flex items-center gap-4 font-mono text-[10px] tracking-widest text-foreground/60 border-l border-foreground/10 pl-3">
             <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
               <span>LAT</span>
               <span className="text-foreground/80 group-hover:text-accent">21.1702° N</span>
