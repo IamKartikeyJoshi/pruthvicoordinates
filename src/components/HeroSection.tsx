@@ -6,7 +6,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ onNavigate }: HeroSectionProps) => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 px-4 md:px-6 overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 grid-pattern opacity-50 pointer-events-none" />
       
@@ -55,9 +55,9 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
 
         {/* Hero Visual */}
         <div className="lg:col-span-5 relative h-[400px] lg:h-[600px] w-full flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <div className="relative w-full h-full border border-foreground/10 bg-popover p-4 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 ease-out">
+          <div className="relative w-full h-full border border-foreground/10 bg-popover p-4 shadow-2xl lg:rotate-2 hover:rotate-0 transition-transform duration-700 ease-out">
             {/* Total Station UI Simulator */}
-            <div className="absolute -left-4 top-16 z-20 bg-popover/95 backdrop-blur-md p-4 shadow-xl border border-foreground/10 max-w-[260px]">
+            <div className="absolute left-2 lg:-left-4 top-16 z-20 bg-popover/95 backdrop-blur-md p-3 lg:p-4 shadow-xl border border-foreground/10 max-w-[220px] lg:max-w-[260px]">
               <div className="flex justify-between items-end mb-2">
                 <h4 className="font-mono text-xs font-bold text-foreground/40">TS-16 OPTICAL</h4>
                 <div className="flex gap-1">

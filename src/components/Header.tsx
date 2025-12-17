@@ -56,8 +56,8 @@ const Header = ({ onNavigate }: HeaderProps) => {
         </div>
 
         {/* Navigation - Desktop */}
-        <div className="flex items-center gap-8">
-          <nav className="hidden md:flex gap-6 font-sans text-xs font-semibold tracking-widest uppercase text-foreground/70">
+        <div className="flex items-center gap-4 lg:gap-8">
+          <nav className="hidden lg:flex gap-4 xl:gap-6 font-sans text-xs font-semibold tracking-widest uppercase text-foreground/70">
             {navItems.map((item) => (
               <button
                 key={item.section}
@@ -71,14 +71,14 @@ const Header = ({ onNavigate }: HeaderProps) => {
 
           <button
             onClick={() => handleNav("contact")}
-            className="hidden md:block px-6 py-2.5 bg-foreground text-background font-mono text-xs hover:bg-accent transition-all duration-300 uppercase tracking-widest shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            className="hidden lg:block px-4 xl:px-6 py-2.5 bg-foreground text-background font-mono text-xs hover:bg-accent transition-all duration-300 uppercase tracking-widest shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap"
           >
             Start Project
           </button>
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden text-foreground p-2"
+            className="lg:hidden text-foreground p-2"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -88,7 +88,7 @@ const Header = ({ onNavigate }: HeaderProps) => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-background border-t border-foreground/10 animate-fade-in-up">
+        <div className="lg:hidden bg-background border-t border-foreground/10 animate-fade-in-up">
           <nav className="container mx-auto px-4 py-6 flex flex-col gap-4">
             {navItems.map((item) => (
               <button
