@@ -1,17 +1,17 @@
 import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
+import ExpertiseSection from "@/components/ExpertiseSection";
 import Footer from "@/components/Footer";
 
-const Index = () => {
+const Expertise = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
-      <main>
-        <HeroSection />
+      <main className="pt-24">
+        <ExpertiseSection />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default Index;
+export default Expertise;
