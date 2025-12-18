@@ -1,23 +1,21 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
-interface HeaderProps {
-  onNavigate: (section: string) => void;
-}
-
-const Header = ({ onNavigate }: HeaderProps) => {
+const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navItems = [
-    { label: "Home", section: "home" },
-    { label: "Mission", section: "mission" },
-    { label: "Expertise", section: "expertise" },
-    { label: "Services", section: "services" },
-    { label: "Portfolio", section: "portfolio" },
+    { label: "Home", path: "/" },
+    { label: "Mission", path: "/mission" },
+    { label: "Expertise", path: "/expertise" },
+    { label: "Services", path: "/services" },
+    { label: "Portfolio", path: "/portfolio" },
   ];
 
-  const handleNav = (section: string) => {
-    onNavigate(section);
+  const handleNav = (path: string) => {
+    navigate(path);
     setMobileMenuOpen(false);
   };
 
@@ -26,15 +24,15 @@ const Header = ({ onNavigate }: HeaderProps) => {
       <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
         {/* Brand */}
         <div className="flex items-center gap-6 lg:gap-10">
-          <button 
-            onClick={() => handleNav("home")} 
+          <Link 
+            to="/" 
             className="flex items-center gap-3 cursor-pointer group"
           >
             <div className="w-2.5 h-2.5 bg-accent rounded-full blinker" />
             <h1 className="font-serif text-xl md:text-2xl lg:text-3xl tracking-tight font-bold text-foreground whitespace-nowrap">
               PRUTHVI <span className="font-light italic">CO-ORDINATES</span>
             </h1>
-          </button>
+          </Link>
 
           {/* Data Points - Desktop */}
           <div className="hidden lg:flex items-center gap-4 font-mono text-[10px] tracking-widest text-foreground/60 border-l border-foreground/10 pl-3">
@@ -59,22 +57,22 @@ const Header = ({ onNavigate }: HeaderProps) => {
         <div className="flex items-center gap-4 lg:gap-8">
           <nav className="hidden lg:flex gap-4 xl:gap-6 font-sans text-xs font-semibold tracking-widest uppercase text-foreground/70">
             {navItems.map((item) => (
-              <button
-                key={item.section}
-                onClick={() => handleNav(item.section)}
+              <Link
+                key={item.path}
+                to={item.path}
                 className="hover:text-accent transition-colors"
               >
                 {item.label}
-              </button>
+              </Link>
             ))}
           </nav>
 
-          <button
-            onClick={() => handleNav("contact")}
+          <Link
+            to="/contact"
             className="hidden lg:block px-4 xl:px-6 py-2.5 bg-foreground text-background font-mono text-xs hover:bg-accent transition-all duration-300 uppercase tracking-widest shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap"
           >
             Start Project
-          </button>
+          </Link>
 
           {/* Mobile Menu Toggle */}
           <button
@@ -92,15 +90,15 @@ const Header = ({ onNavigate }: HeaderProps) => {
           <nav className="container mx-auto px-4 py-6 flex flex-col gap-4">
             {navItems.map((item) => (
               <button
-                key={item.section}
-                onClick={() => handleNav(item.section)}
+                key={item.path}
+                onClick={() => handleNav(item.path)}
                 className="text-left font-sans text-sm font-semibold tracking-widest uppercase text-foreground/70 hover:text-accent transition-colors py-2"
               >
                 {item.label}
               </button>
             ))}
             <button
-              onClick={() => handleNav("contact")}
+              onClick={() => handleNav("/contact")}
               className="mt-4 px-6 py-3 bg-foreground text-background font-mono text-xs uppercase tracking-widest"
             >
               Start Project

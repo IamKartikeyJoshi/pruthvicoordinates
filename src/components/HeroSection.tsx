@@ -1,10 +1,7 @@
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
-interface HeroSectionProps {
-  onNavigate: (section: string) => void;
-}
-
-const HeroSection = ({ onNavigate }: HeroSectionProps) => {
+const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-24 px-4 md:px-6 overflow-hidden">
       {/* Background Grid */}
@@ -37,19 +34,19 @@ const HeroSection = ({ onNavigate }: HeroSectionProps) => {
           </p>
 
           <div className="flex flex-wrap gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <button
-              onClick={() => onNavigate("services")}
+            <Link
+              to="/services"
               className="px-8 py-4 bg-foreground text-background font-mono text-sm hover:bg-accent transition-all duration-300 flex items-center gap-3 group"
             >
               EXPLORE SERVICES 
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={() => onNavigate("portfolio")}
+            </Link>
+            <Link
+              to="/portfolio"
               className="px-8 py-4 border border-foreground/20 hover:border-foreground font-mono text-sm transition-all duration-300"
             >
               VIEW PORTFOLIO
-            </button>
+            </Link>
           </div>
         </div>
 
