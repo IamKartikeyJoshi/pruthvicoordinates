@@ -156,7 +156,7 @@ const Services = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden page-bg">
       <Header />
       
       <main className="pt-24">
@@ -183,13 +183,13 @@ const Services = () => {
         </section>
 
         {/* Services Grid */}
-        <section className="py-24 bg-background">
+        <section className="py-24 bg-background relative z-10">
           <div className="container mx-auto px-6">
             <div className="space-y-16">
-              {services.map((service, index) => (
+              {services.map((service) => (
                 <div 
                   key={service.number} 
-                  className={`border border-foreground/10 ${index % 2 === 0 ? "bg-popover" : "bg-background"}`}
+                  className="border border-foreground/10 bg-popover"
                 >
                   <div className="p-8 lg:p-12">
                     <div className="grid lg:grid-cols-12 gap-8">
@@ -217,7 +217,7 @@ const Services = () => {
                       </div>
 
                       {/* Right Column - Deliverables */}
-                      <div className="lg:col-span-5 bg-foreground/5 p-6">
+                      <div className="lg:col-span-5 bg-secondary/30 p-6 border border-foreground/5">
                         <div className="font-mono text-xs text-foreground/40 mb-4 tracking-widest uppercase flex items-center gap-2">
                           <FileText className="w-4 h-4" />
                           Deliverables

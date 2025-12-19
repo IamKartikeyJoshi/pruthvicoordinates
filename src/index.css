@@ -101,6 +101,23 @@
     background-size: 40px 40px;
   }
 
+  /* Enhanced page background with subtle texture */
+  .page-bg {
+    position: relative;
+  }
+  
+  .page-bg::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(to right, hsl(var(--foreground) / 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   /* Blinker Animation */
   .blinker {
     animation: blink 1.5s infinite;

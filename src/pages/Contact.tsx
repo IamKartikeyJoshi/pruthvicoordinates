@@ -76,7 +76,7 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden page-bg">
       <Header />
       
       <main className="pt-24">
