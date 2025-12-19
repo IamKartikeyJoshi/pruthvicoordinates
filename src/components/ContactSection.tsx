@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send, MapPin, Phone, Mail, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const ContactSection = () => {
   const [step, setStep] = useState(1);
@@ -13,6 +14,8 @@ const ContactSection = () => {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [referenceCode, setReferenceCode] = useState("");
 
   const projectTypes = [
     { id: "topographical", label: "Topographical Survey", icon: "📍" },
@@ -32,7 +35,7 @@ const ContactSection = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate
@@ -45,12 +48,40 @@ const ContactSection = () => {
       return;
     }
 
-    // Simulate submission
-    setSubmitted(true);
-    toast({
-      title: "Message Sent!",
-      description: "We'll get back to you within 24 hours.",
-    });
+    setIsSubmitting(true);
+    const refCode = `PRU-${Date.now().toString(36).toUpperCase()}`;
+
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert({
+          project_type: formData.projectType,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          location: formData.location || null,
+          message: formData.message || null,
+          reference_code: refCode,
+        });
+
+      if (error) throw error;
+
+      setReferenceCode(refCode);
+      setSubmitted(true);
+      toast({
+        title: "Message Sent!",
+        description: "We'll get back to you within 24 hours.",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Submission Failed",
+        description: "Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const goBack = () => {
@@ -74,7 +105,7 @@ const ContactSection = () => {
               and reach out within 24 hours.
             </p>
             <div className="font-mono text-xs text-background/50 border border-background/20 inline-block px-4 py-2">
-              REF: PRU-{Date.now().toString(36).toUpperCase()}
+              REF: {referenceCode}
             </div>
           </div>
         </div>
@@ -297,10 +328,11 @@ const ContactSection = () => {
 
                 <button
                   onClick={handleSubmit}
-                  className="mt-8 w-full px-8 py-5 bg-accent text-white font-mono text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-accent/90 transition-colors group"
+                  disabled={isSubmitting}
+                  className="mt-8 w-full px-8 py-5 bg-accent text-white font-mono text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-accent/90 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  Submit Project Request
+                  {isSubmitting ? "Submitting..." : "Submit Project Request"}
                 </button>
               </div>
             </div>
