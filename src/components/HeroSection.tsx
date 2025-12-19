@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 px-4 md:px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-24 px-4 md:px-6 overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 grid-pattern opacity-50 pointer-events-none" />
       
