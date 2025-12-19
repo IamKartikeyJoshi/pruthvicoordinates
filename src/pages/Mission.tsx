@@ -34,7 +34,7 @@ const Mission = () => {
 
   const team = [
     {
-      name: "Rajesh Patel",
+      name: "Kartikey Oberoi",
       role: "Founder & Principal Surveyor",
       experience: "34 years",
       specialty: "Cadastral & Legal Surveys",
