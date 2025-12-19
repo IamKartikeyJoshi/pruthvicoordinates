@@ -34,7 +34,7 @@ const Mission = () => {
 
   const team = [
     {
-      name: "Kartikey Joshi",
+      name: "Vinay Joshi",
       role: "Founder & Principal Surveyor",
       experience: "34 years",
       specialty: "Cadastral & Legal Surveys",
