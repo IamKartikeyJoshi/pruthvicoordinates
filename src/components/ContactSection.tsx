@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, MapPin, Phone, Mail, CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
+import { Send, MapPin, Phone, Mail, CheckCircle, ArrowRight, ArrowLeft, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -23,6 +23,9 @@ const ContactSection = () => {
     { id: "dgps", label: "DGPS Control Survey", icon: "📡" },
     { id: "asbuilt", label: "As-Built Survey", icon: "🏗️" },
     { id: "contour", label: "Contour Mapping", icon: "🗺️" },
+    { id: "lidar", label: "LiDAR Survey", icon: "📊" },
+    { id: "drone", label: "Drone Survey", icon: "🚁" },
+    { id: "bathymetry", label: "Bathymetry Survey", icon: "🌊" },
     { id: "other", label: "Other / Consultation", icon: "💬" },
   ];
 
@@ -66,6 +69,24 @@ const ContactSection = () => {
 
       if (error) throw error;
 
+      // Send email notification
+      try {
+        await supabase.functions.invoke('send-contact-email', {
+          body: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            projectType: formData.projectType,
+            location: formData.location,
+            message: formData.message,
+            referenceCode: refCode,
+          },
+        });
+      } catch (emailError) {
+        console.error("Email notification failed:", emailError);
+        // Don't fail the submission if email fails
+      }
+
       setReferenceCode(refCode);
       setSubmitted(true);
       toast({
@@ -86,6 +107,18 @@ const ContactSection = () => {
 
   const goBack = () => {
     if (step > 1) setStep(step - 1);
+  };
+
+  const cancelForm = () => {
+    setStep(1);
+    setFormData({
+      projectType: "",
+      name: "",
+      email: "",
+      phone: "",
+      location: "",
+      message: "",
+    });
   };
 
   if (submitted) {
@@ -284,13 +317,22 @@ const ContactSection = () => {
           {/* Step 3: Review & Submit */}
           {step === 3 && (
             <div className="animate-fade-in-up">
-              <button
-                onClick={goBack}
-                className="flex items-center gap-2 text-background/60 hover:text-accent mb-8 font-mono text-sm transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Edit details
-              </button>
+              <div className="flex justify-between items-center mb-8">
+                <button
+                  onClick={goBack}
+                  className="flex items-center gap-2 text-background/60 hover:text-accent font-mono text-sm transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Edit details
+                </button>
+                <button
+                  onClick={cancelForm}
+                  className="flex items-center gap-2 text-background/40 hover:text-accent font-mono text-sm transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                  Cancel
+                </button>
+              </div>
 
               <div className="border border-background/20 p-8">
                 <h3 className="font-serif text-2xl mb-6">Review Your Request</h3>

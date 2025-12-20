@@ -1,4 +1,4 @@
-import { Satellite, Camera, Layers, Ruler } from "lucide-react";
+import { Satellite, Camera, Layers, Ruler, Plane, Waves } from "lucide-react";
 
 const ExpertiseSection = () => {
   const expertise = [
@@ -22,6 +22,16 @@ const ExpertiseSection = () => {
       title: "Boundary Layout",
       description: "Cadastral surveying to establish property lines and resolve encroachments.",
     },
+    {
+      icon: Plane,
+      title: "LiDAR & Drone",
+      description: "Aerial surveys using LiDAR and drone technology for rapid large-area mapping.",
+    },
+    {
+      icon: Waves,
+      title: "Bathymetry",
+      description: "Underwater topography surveys for water bodies, ports, and marine projects.",
+    },
   ];
 
   return (
@@ -42,7 +52,7 @@ const ExpertiseSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/10 border border-foreground/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-foreground/10 border border-foreground/10">
           {expertise.map((item) => (
             <div
               key={item.title}
