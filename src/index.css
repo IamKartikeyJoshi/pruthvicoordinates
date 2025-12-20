@@ -68,6 +68,11 @@
 @layer base {
   * {
     @apply border-border;
+    cursor: crosshair;
+  }
+
+  a, button, [role="button"], input, textarea, select, label {
+    cursor: pointer;
   }
 
   body {
@@ -89,6 +94,15 @@
   ::selection {
     background: hsl(var(--accent));
     color: white;
+  }
+
+  /* Fix input styling in dark sections */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px hsl(var(--foreground) / 0.1) inset !important;
+    -webkit-text-fill-color: inherit !important;
   }
 }
 
