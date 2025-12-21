@@ -13,14 +13,13 @@ const authSchema = z.object({
 });
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
-  const { user, signIn, signUp, isLoading } = useAuth();
+  const { user, signIn, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,51 +54,26 @@ const Auth = () => {
     setIsSubmitting(true);
 
     try {
-      if (isLogin) {
-        const { error } = await signIn(email, password);
-        if (error) {
-          if (error.message.includes('Invalid login')) {
-            toast({
-              title: 'Login Failed',
-              description: 'Invalid email or password. Please try again.',
-              variant: 'destructive',
-            });
-          } else {
-            toast({
-              title: 'Error',
-              description: error.message,
-              variant: 'destructive',
-            });
-          }
+      const { error } = await signIn(email, password);
+      if (error) {
+        if (error.message.includes('Invalid login')) {
+          toast({
+            title: 'Login Failed',
+            description: 'Invalid email or password. Please try again.',
+            variant: 'destructive',
+          });
         } else {
           toast({
-            title: 'Welcome back!',
-            description: 'You have successfully logged in.',
+            title: 'Error',
+            description: error.message,
+            variant: 'destructive',
           });
         }
       } else {
-        const { error } = await signUp(email, password);
-        if (error) {
-          if (error.message.includes('already registered')) {
-            toast({
-              title: 'Account Exists',
-              description: 'This email is already registered. Please log in instead.',
-              variant: 'destructive',
-            });
-          } else {
-            toast({
-              title: 'Sign Up Failed',
-              description: error.message,
-              variant: 'destructive',
-            });
-          }
-        } else {
-          toast({
-            title: 'Account Created!',
-            description: 'You can now log in with your credentials.',
-          });
-          setIsLogin(true);
-        }
+        toast({
+          title: 'Welcome!',
+          description: 'You have successfully logged in.',
+        });
       }
     } finally {
       setIsSubmitting(false);
@@ -124,10 +98,10 @@ const Auth = () => {
             <span className="font-serif text-2xl text-background">Pruthvi</span>
           </div>
           <h1 className="font-serif text-3xl text-background mb-2">
-            {isLogin ? 'Admin Access' : 'Create Account'}
+            Admin Login
           </h1>
           <p className="text-background/60 text-sm">
-            {isLogin ? 'Sign in to manage appointments and contacts' : 'Register for admin access'}
+            Sign in to manage appointments and contacts
           </p>
         </div>
 
@@ -183,25 +157,12 @@ const Auth = () => {
             disabled={isSubmitting}
             className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-mono uppercase tracking-widest"
           >
-            {isSubmitting ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
+            {isSubmitting ? 'Signing In...' : 'Sign In'}
           </Button>
         </form>
 
-        {/* Toggle */}
-        <div className="text-center mt-8">
-          <button
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setErrors({});
-            }}
-            className="text-background/60 hover:text-accent text-sm transition-colors"
-          >
-            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-          </button>
-        </div>
-
         {/* Back to home */}
-        <div className="text-center mt-4">
+        <div className="text-center mt-8">
           <a href="/" className="text-background/40 hover:text-background/60 text-xs font-mono uppercase tracking-widest">
             ← Back to website
           </a>

@@ -23,8 +23,8 @@ const ContactSection = () => {
     { id: "dgps", label: "DGPS Control Survey", icon: "📡" },
     { id: "asbuilt", label: "As-Built Survey", icon: "🏗️" },
     { id: "contour", label: "Contour Mapping", icon: "🗺️" },
-    { id: "lidar", label: "LiDAR Survey", icon: "📊" },
-    { id: "drone", label: "Drone Survey", icon: "🚁" },
+    { id: "lidar", label: "LiDAR Survey", icon: "🛰️" },
+    { id: "drone", label: "Drone Aerial Survey", icon: "✈️" },
     { id: "bathymetry", label: "Bathymetry Survey", icon: "🌊" },
     { id: "other", label: "Other / Consultation", icon: "💬" },
   ];
@@ -239,7 +239,7 @@ const ContactSection = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border-b-2 border-background/20 focus:border-accent py-3 text-lg outline-none transition-colors placeholder:text-background/30"
+                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
                     placeholder="Enter your name"
                   />
                 </div>
@@ -253,7 +253,7 @@ const ContactSection = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border-b-2 border-background/20 focus:border-accent py-3 text-lg outline-none transition-colors placeholder:text-background/30"
+                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -267,7 +267,7 @@ const ContactSection = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border-b-2 border-background/20 focus:border-accent py-3 text-lg outline-none transition-colors placeholder:text-background/30"
+                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
                     placeholder="+91 98765 43210"
                   />
                 </div>
@@ -281,7 +281,7 @@ const ContactSection = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent border-b-2 border-background/20 focus:border-accent py-3 text-lg outline-none transition-colors placeholder:text-background/30"
+                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
                     placeholder="City, State or Address"
                   />
                 </div>
@@ -296,7 +296,7 @@ const ContactSection = () => {
                   value={formData.message}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full bg-transparent border-2 border-background/20 focus:border-accent p-4 outline-none transition-colors resize-none placeholder:text-background/30"
+                  className="w-full bg-background/10 border-2 border-background/20 focus:border-accent p-4 outline-none transition-colors resize-none placeholder:text-background/40 text-background"
                   placeholder="Tell us about your project requirements, timeline, or any specific concerns..."
                 />
               </div>
