@@ -1,8 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-
-// Configurable admin email - change this to update recipient
 const ADMIN_EMAIL = "pruthvinay@gmail.com";
 
 const corsHeaders = {
@@ -11,43 +9,35 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface ContactEmailRequest {
-  name: string;
-  email: string;
-  phone: string;
+interface AppointmentEmailRequest {
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
   projectType: string;
   location?: string;
-  message?: string;
-  referenceCode: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  notes?: string;
 }
 
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-IN', { 
+    weekday: 'long', 
+    year: 'numeric',
+    month: 'long', 
+    day: 'numeric' 
+  });
+};
+
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const data: ContactEmailRequest = await req.json();
-    
-    // Input validation
-    if (!data.name || !data.email || !data.phone || !data.projectType || !data.referenceCode) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-    
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid email format" }),
-        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
-      );
-    }
-    
-    console.log("Sending contact emails for:", data.name, data.email);
+    const data: AppointmentEmailRequest = await req.json();
+    console.log("Received appointment request:", data);
 
     // Send notification to admin
     const adminEmailRes = await fetch("https://api.resend.com/emails", {
@@ -59,30 +49,32 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "Pruthvi Survey <onboarding@resend.dev>",
         to: [ADMIN_EMAIL],
-        subject: `New Project Inquiry: ${data.projectType} - ${data.name}`,
+        subject: `New Appointment Request: ${data.projectType} - ${data.clientName}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h1 style="color: #1a1a1a; border-bottom: 2px solid #ff3333; padding-bottom: 10px;">
-              New Project Inquiry
+              New Appointment Request
             </h1>
             
             <div style="background: #f4f1ea; padding: 20px; margin: 20px 0;">
-              <p style="margin: 0; color: #666; font-size: 12px;">REFERENCE CODE</p>
-              <p style="margin: 5px 0 0; font-family: monospace; font-size: 18px; color: #1a1a1a;">${data.referenceCode}</p>
+              <p style="margin: 0; color: #666; font-size: 12px;">REQUESTED DATE & TIME</p>
+              <p style="margin: 5px 0 0; font-size: 18px; color: #1a1a1a; font-weight: bold;">
+                ${formatDate(data.appointmentDate)} at ${data.appointmentTime}
+              </p>
             </div>
 
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Name</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">${data.name}</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Client Name</td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-weight: bold;">${data.clientName}</td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Email</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="mailto:${data.email}">${data.email}</a></td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="mailto:${data.clientEmail}">${data.clientEmail}</a></td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Phone</td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="tel:${data.phone}">${data.phone}</a></td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee;"><a href="tel:${data.clientPhone}">${data.clientPhone}</a></td>
               </tr>
               <tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666;">Project Type</td>
@@ -96,15 +88,15 @@ const handler = async (req: Request): Promise<Response> => {
               ` : ''}
             </table>
 
-            ${data.message ? `
+            ${data.notes ? `
             <div style="margin-top: 20px;">
-              <p style="color: #666; font-size: 12px; margin-bottom: 5px;">MESSAGE</p>
-              <p style="background: #fff; padding: 15px; border-left: 3px solid #ff3333; margin: 0;">${data.message}</p>
+              <p style="color: #666; font-size: 12px; margin-bottom: 5px;">CLIENT NOTES</p>
+              <p style="background: #fff; padding: 15px; border-left: 3px solid #ff3333; margin: 0;">${data.notes}</p>
             </div>
             ` : ''}
 
             <p style="color: #999; font-size: 12px; margin-top: 30px; text-align: center;">
-              This email was sent from the Pruthvi Survey website contact form.
+              Please confirm this appointment within 24 hours.
             </p>
           </div>
         `,
@@ -120,24 +112,29 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Pruthvi Survey <onboarding@resend.dev>",
-        to: [data.email],
-        subject: `We received your inquiry - ${data.referenceCode}`,
+        to: [data.clientEmail],
+        subject: `Appointment Request Received - ${formatDate(data.appointmentDate)}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h1 style="color: #1a1a1a; border-bottom: 2px solid #ff3333; padding-bottom: 10px;">
-              Thank You, ${data.name}!
+              Thank You, ${data.clientName}!
             </h1>
             
             <p style="font-size: 16px; line-height: 1.6; color: #333;">
-              We have received your project inquiry and our team will review your requirements within 24 hours.
+              Your appointment request has been received. Our team will review your request and confirm within 24 hours.
             </p>
 
             <div style="background: #f4f1ea; padding: 20px; margin: 20px 0; text-align: center;">
-              <p style="margin: 0; color: #666; font-size: 12px;">YOUR REFERENCE CODE</p>
-              <p style="margin: 5px 0 0; font-family: monospace; font-size: 24px; color: #1a1a1a; letter-spacing: 2px;">${data.referenceCode}</p>
+              <p style="margin: 0; color: #666; font-size: 12px;">REQUESTED APPOINTMENT</p>
+              <p style="margin: 5px 0 0; font-size: 20px; color: #1a1a1a; font-weight: bold;">
+                ${formatDate(data.appointmentDate)}
+              </p>
+              <p style="margin: 5px 0 0; font-size: 16px; color: #ff3333;">
+                at ${data.appointmentTime}
+              </p>
             </div>
 
-            <h3 style="color: #1a1a1a;">Your Inquiry Summary</h3>
+            <h3 style="color: #1a1a1a;">Appointment Details</h3>
             <ul style="color: #666; line-height: 1.8;">
               <li><strong>Project Type:</strong> ${data.projectType}</li>
               ${data.location ? `<li><strong>Location:</strong> ${data.location}</li>` : ''}
@@ -159,16 +156,16 @@ const handler = async (req: Request): Promise<Response> => {
     const adminResult = await adminEmailRes.json();
     const clientResult = await clientEmailRes.json();
 
-    console.log("Emails sent:", { adminResult, clientResult });
+    console.log("Appointment emails sent:", { adminResult, clientResult });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
-    console.error("Error in send-contact-email function:", error);
+    console.error("Error in send-appointment-email function:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to send email. Please try again or contact us directly." }),
+      JSON.stringify({ error: error.message }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

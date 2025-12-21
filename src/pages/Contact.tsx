@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactSection from "@/components/ContactSection";
-import { MapPin, Phone, Mail, Clock, MessageSquare } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, MessageSquare, Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Contact = () => {
   const contactMethods = [
@@ -74,6 +76,7 @@ const Contact = () => {
       a: "We typically require 50% advance to commence work, with the balance due upon delivery of final reports. For large projects, milestone-based payment schedules can be arranged.",
     },
   ];
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden page-bg">
@@ -95,9 +98,16 @@ const Contact = () => {
                 Let's Define Your <br />
                 <span className="italic text-accent">Coordinates</span>
               </h1>
-              <p className="font-sans text-xl md:text-2xl text-foreground/70 max-w-2xl leading-relaxed">
+              <p className="font-sans text-xl md:text-2xl text-foreground/70 max-w-2xl leading-relaxed mb-8">
                 Ready to start your surveying project? Our team is here to help you navigate from concept to completion with precision and expertise.
               </p>
+              <Button 
+                onClick={() => navigate('/book-appointment')}
+                className="bg-accent hover:bg-accent/90 text-white font-mono uppercase tracking-widest px-8 py-6 text-sm"
+              >
+                <Calendar className="w-5 h-5 mr-3" />
+                Request Appointment
+              </Button>
             </div>
           </div>
         </section>
