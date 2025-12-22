@@ -36,6 +36,7 @@ interface Appointment {
   status: string;
   notes: string | null;
   admin_notes: string | null;
+  meeting_link: string | null;
 }
 
 const Admin = () => {
@@ -61,6 +62,7 @@ const Admin = () => {
     status: 'pending',
     notes: '',
     admin_notes: '',
+    meeting_link: '',
   });
 
   useEffect(() => {
@@ -107,6 +109,7 @@ const Admin = () => {
             location: appointmentForm.location || null,
             notes: appointmentForm.notes || null,
             admin_notes: appointmentForm.admin_notes || null,
+            meeting_link: appointmentForm.meeting_link || null,
           })
           .eq('id', editingAppointment.id);
 
@@ -120,6 +123,7 @@ const Admin = () => {
             location: appointmentForm.location || null,
             notes: appointmentForm.notes || null,
             admin_notes: appointmentForm.admin_notes || null,
+            meeting_link: appointmentForm.meeting_link || null,
           });
 
         if (error) throw error;
@@ -173,6 +177,7 @@ const Admin = () => {
       status: 'pending',
       notes: '',
       admin_notes: '',
+      meeting_link: '',
     });
   };
 
@@ -189,6 +194,7 @@ const Admin = () => {
       status: appointment.status,
       notes: appointment.notes || '',
       admin_notes: appointment.admin_notes || '',
+      meeting_link: appointment.meeting_link || '',
     });
     setShowAppointmentForm(true);
   };
@@ -380,6 +386,14 @@ const Admin = () => {
                         onChange={(e) => setAppointmentForm({ ...appointmentForm, admin_notes: e.target.value })}
                         className="w-full h-20 px-3 py-2 border border-input bg-background rounded-md resize-none"
                         placeholder="Internal notes..."
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-mono text-foreground/60 mb-1">Meeting Link (Teams/Zoom)</label>
+                      <Input
+                        value={appointmentForm.meeting_link}
+                        onChange={(e) => setAppointmentForm({ ...appointmentForm, meeting_link: e.target.value })}
+                        placeholder="https://teams.microsoft.com/... or https://zoom.us/..."
                       />
                     </div>
                   </div>

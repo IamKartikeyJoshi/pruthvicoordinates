@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { appointmentFormSchema } from "@/lib/validations";
+import { z } from "zod";
 
 const projectTypes = [
   { id: "topographical", label: "Topographical Survey", icon: "📍" },
@@ -34,6 +36,7 @@ const BookAppointment = () => {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
   const [formData, setFormData] = useState({
     projectType: "",
@@ -53,32 +56,79 @@ const BookAppointment = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear error when user types
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: '' });
+    }
   };
 
   const handleDateSelect = (date: string) => {
     setFormData({ ...formData, appointmentDate: date });
+    if (errors.appointmentDate) {
+      setErrors({ ...errors, appointmentDate: '' });
+    }
   };
 
   const handleTimeSelect = (time: string) => {
     setFormData({ ...formData, appointmentTime: time });
+    if (errors.appointmentTime) {
+      setErrors({ ...errors, appointmentTime: '' });
+    }
   };
 
-  const validateStep2 = () => {
-    return formData.clientName && formData.clientEmail && formData.clientPhone;
+  const validateStep2 = (): boolean => {
+    try {
+      appointmentFormSchema.pick({ clientName: true, clientEmail: true, clientPhone: true }).parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+        });
+        setErrors(fieldErrors);
+      }
+      return false;
+    }
   };
 
-  const validateStep3 = () => {
-    return formData.appointmentDate && formData.appointmentTime;
+  const validateStep3 = (): boolean => {
+    try {
+      appointmentFormSchema.pick({ appointmentDate: true, appointmentTime: true }).parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+        });
+        setErrors(fieldErrors);
+      }
+      return false;
+    }
   };
 
   const handleSubmit = async () => {
-    if (!validateStep2() || !validateStep3()) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
+    // Validate full form
+    try {
+      appointmentFormSchema.parse(formData);
+      setErrors({});
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+        });
+        setErrors(fieldErrors);
+        toast({
+          title: "Validation Error",
+          description: "Please check the form for errors.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
