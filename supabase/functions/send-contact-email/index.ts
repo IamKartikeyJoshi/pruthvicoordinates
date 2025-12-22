@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const ADMIN_EMAIL = "pruthvinay@gmail.com";
 
 const corsHeaders = {
@@ -28,32 +27,46 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Received contact form submission:", data);
 
     // Send notification to admin
-    await resend.emails.send({
-      from: "Pruthvi Survey <onboarding@resend.dev>",
-      to: [ADMIN_EMAIL],
-      subject: `New Inquiry from ${data.name}`,
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${data.name}</p>
-        <p><strong>Email:</strong> ${data.email}</p>
-        <p><strong>Phone:</strong> ${data.phone}</p>
-        <p><strong>Project Type:</strong> ${data.projectType}</p>
-        <p><strong>Message:</strong> ${data.message || "No message provided"}</p>
-        <p><strong>Reference Code:</strong> ${data.referenceCode}</p>
-      `,
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Pruthvi Survey <onboarding@resend.dev>",
+        to: [ADMIN_EMAIL],
+        subject: `New Inquiry from ${data.name}`,
+        html: `
+          <h2>New Contact Form Submission</h2>
+          <p><strong>Name:</strong> ${data.name}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Phone:</strong> ${data.phone}</p>
+          <p><strong>Project Type:</strong> ${data.projectType}</p>
+          <p><strong>Message:</strong> ${data.message || "No message provided"}</p>
+          <p><strong>Reference Code:</strong> ${data.referenceCode}</p>
+        `,
+      }),
     });
 
     // Send confirmation to client
-    await resend.emails.send({
-      from: "Pruthvi Survey <onboarding@resend.dev>",
-      to: [data.email],
-      subject: "We received your inquiry - Pruthvi Survey",
-      html: `
-        <h2>Thank you for contacting us, ${data.name}!</h2>
-        <p>We have received your inquiry and will get back to you shortly.</p>
-        <p><strong>Reference Code:</strong> ${data.referenceCode}</p>
-        <p>Best regards,<br>Pruthvi Survey Team</p>
-      `,
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Pruthvi Survey <onboarding@resend.dev>",
+        to: [data.email],
+        subject: "We received your inquiry - Pruthvi Survey",
+        html: `
+          <h2>Thank you for contacting us, ${data.name}!</h2>
+          <p>We have received your inquiry and will get back to you shortly.</p>
+          <p><strong>Reference Code:</strong> ${data.referenceCode}</p>
+          <p>Best regards,<br>Pruthvi Survey Team</p>
+        `,
+      }),
     });
 
     console.log("Emails sent successfully");
