@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Send, MapPin, Phone, Mail, CheckCircle, ArrowRight, ArrowLeft, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { contactFormSchema } from "@/lib/validations";
+import { z } from "zod";
 
 const ContactSection = () => {
   const [step, setStep] = useState(1);
@@ -16,6 +18,7 @@ const ContactSection = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referenceCode, setReferenceCode] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const projectTypes = [
     { id: "topographical", label: "Topographical Survey", icon: "📍" },
@@ -38,17 +41,44 @@ const ContactSection = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateStep2 = (): boolean => {
+    try {
+      contactFormSchema.pick({ name: true, email: true, phone: true }).parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+        });
+        setErrors(fieldErrors);
+      }
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate
-    if (!formData.name || !formData.email || !formData.phone) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
+    // Validate full form
+    try {
+      contactFormSchema.parse(formData);
+      setErrors({});
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+        });
+        setErrors(fieldErrors);
+        toast({
+          title: "Validation Error",
+          description: "Please check the form for errors.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -239,9 +269,10 @@ const ContactSection = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
+                    className={`w-full bg-background/10 border-b-2 ${errors.name ? 'border-red-500' : 'border-background/20'} focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background`}
                     placeholder="Enter your name"
                   />
+                  {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
@@ -253,9 +284,10 @@ const ContactSection = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
+                    className={`w-full bg-background/10 border-b-2 ${errors.email ? 'border-red-500' : 'border-background/20'} focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background`}
                     placeholder="you@example.com"
                   />
+                  {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                 </div>
 
                 <div>
@@ -267,9 +299,10 @@ const ContactSection = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full bg-background/10 border-b-2 border-background/20 focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background"
+                    className={`w-full bg-background/10 border-b-2 ${errors.phone ? 'border-red-500' : 'border-background/20'} focus:border-accent py-3 px-4 text-lg outline-none transition-colors placeholder:text-background/40 text-background`}
                     placeholder="+91 98765 43210"
                   />
+                  {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
                 </div>
 
                 <div>
@@ -303,8 +336,11 @@ const ContactSection = () => {
 
               <div className="mt-8 flex justify-end">
                 <button
-                  onClick={() => setStep(3)}
-                  disabled={!formData.name || !formData.email || !formData.phone}
+                  onClick={() => {
+                    if (validateStep2()) {
+                      setStep(3);
+                    }
+                  }}
                   className="px-8 py-4 bg-accent text-white font-mono text-sm uppercase tracking-widest flex items-center gap-3 hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Review & Submit

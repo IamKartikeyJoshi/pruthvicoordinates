@@ -25,6 +25,7 @@ export type Database = {
           created_at: string
           id: string
           location: string | null
+          meeting_link: string | null
           notes: string | null
           project_type: string
           status: string
@@ -40,6 +41,7 @@ export type Database = {
           created_at?: string
           id?: string
           location?: string | null
+          meeting_link?: string | null
           notes?: string | null
           project_type: string
           status?: string
@@ -55,6 +57,7 @@ export type Database = {
           created_at?: string
           id?: string
           location?: string | null
+          meeting_link?: string | null
           notes?: string | null
           project_type?: string
           status?: string

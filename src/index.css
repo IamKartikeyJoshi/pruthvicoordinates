@@ -101,8 +101,35 @@
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
   textarea:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px hsl(var(--foreground) / 0.1) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
     -webkit-text-fill-color: inherit !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Dark section autofill fix */
+  .bg-foreground input:-webkit-autofill,
+  .bg-foreground input:-webkit-autofill:hover,
+  .bg-foreground input:-webkit-autofill:focus,
+  .bg-foreground textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px hsl(var(--foreground)) inset !important;
+    -webkit-text-fill-color: hsl(var(--background)) !important;
+  }
+
+  /* Light section autofill fix */
+  .bg-background input:-webkit-autofill,
+  .bg-background input:-webkit-autofill:hover,
+  .bg-background input:-webkit-autofill:focus,
+  .bg-background textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  }
+
+  /* Page-bg autofill fix (dark sections like auth) */
+  .page-bg input:-webkit-autofill,
+  .page-bg input:-webkit-autofill:hover,
+  .page-bg input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px hsl(0 0% 15%) inset !important;
+    -webkit-text-fill-color: hsl(var(--background)) !important;
   }
 }
 

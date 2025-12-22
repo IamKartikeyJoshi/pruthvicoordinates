@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import heroImage from "@/assets/hero-lidar-scan.jpg";
 
 const HeroSection = () => {
   return (
@@ -50,94 +51,61 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Hero Visual */}
+        {/* Hero Visual - LiDAR Point Cloud Image */}
         <div className="lg:col-span-5 relative h-[400px] lg:h-[600px] w-full flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <div className="relative w-full h-full border border-foreground/10 bg-popover p-4 shadow-2xl lg:rotate-2 hover:rotate-0 transition-transform duration-700 ease-out">
-            {/* Total Station UI Simulator */}
-            <div className="absolute left-2 lg:-left-4 top-16 z-20 bg-popover/95 backdrop-blur-md p-3 lg:p-4 shadow-xl border border-foreground/10 max-w-[220px] lg:max-w-[260px]">
+          <div className="relative w-full h-full border border-foreground/10 bg-popover shadow-2xl lg:rotate-2 hover:rotate-0 transition-transform duration-700 ease-out overflow-hidden">
+            {/* LiDAR Point Cloud Image */}
+            <img 
+              src={heroImage} 
+              alt="Advanced LiDAR 3D point cloud visualization of urban landscape" 
+              className="w-full h-full object-cover"
+            />
+            
+            {/* Overlay with tech data */}
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-transparent to-foreground/30" />
+            
+            {/* Tech Data Overlay */}
+            <div className="absolute left-4 top-4 z-20 bg-foreground/90 backdrop-blur-md p-3 shadow-xl border border-background/20">
               <div className="flex justify-between items-end mb-2">
-                <h4 className="font-mono text-xs font-bold text-foreground/40">TS-16 OPTICAL</h4>
+                <h4 className="font-mono text-xs font-bold text-background/60">LIDAR-3D SCAN</h4>
                 <div className="flex gap-1">
-                  <div className="w-1 h-1 bg-accent rounded-full" />
-                  <div className="w-1 h-1 bg-foreground/20 rounded-full" />
-                  <div className="w-1 h-1 bg-foreground/20 rounded-full" />
+                  <div className="w-1 h-1 bg-accent rounded-full animate-pulse" />
+                  <div className="w-1 h-1 bg-measure rounded-full" />
+                  <div className="w-1 h-1 bg-background/40 rounded-full" />
                 </div>
               </div>
-
-              {/* Digital Data Readout */}
-              <div className="bg-foreground p-4 font-mono text-xs shadow-inner relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-                
-                <div className="flex justify-between border-b border-background/20 pb-2 mb-2">
-                  <span className="text-background/50 text-[10px]">MODE: DIST</span>
-                  <span className="text-green-400 text-[10px] animate-pulse">BAT 98%</span>
+              <div className="space-y-1 font-mono text-[10px] text-background/80">
+                <div className="flex justify-between gap-8">
+                  <span className="text-background/50">Points:</span>
+                  <span className="text-cyan-400">2.4M</span>
                 </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-background/60 font-bold">V :</span>
-                    <span className="text-background text-sm tracking-wider">92°45'12"</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-background/60 font-bold">HR:</span>
-                    <span className="text-background text-sm tracking-wider">145°30'05"</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-background/10 p-1 -mx-1">
-                    <span className="text-accent font-bold">SD:</span>
-                    <span className="text-accent text-lg tracking-widest font-bold drop-shadow-[0_0_5px_rgba(255,51,51,0.5)]">
-                      1,245.892 m
-                    </span>
-                  </div>
+                <div className="flex justify-between gap-8">
+                  <span className="text-background/50">Accuracy:</span>
+                  <span className="text-accent">±2mm</span>
                 </div>
-
-                <div className="mt-2 pt-2 border-t border-background/20 flex justify-between text-[9px] text-background/50">
-                  <span>PPM: 0</span>
-                  <span>PRISM: 0mm</span>
+                <div className="flex justify-between gap-8">
+                  <span className="text-background/50">Coverage:</span>
+                  <span className="text-background">360°</span>
                 </div>
-              </div>
-
-              {/* Soft Keys */}
-              <div className="grid grid-cols-4 gap-2 mt-3">
-                {["MEAS", "SHV", "0SET", "COORD"].map((key) => (
-                  <div
-                    key={key}
-                    className="h-6 bg-foreground/5 flex items-center justify-center text-[8px] font-mono text-foreground/60 border border-foreground/10 cursor-pointer hover:bg-foreground/10 transition-colors"
-                  >
-                    {key}
-                  </div>
-                ))}
               </div>
             </div>
 
-            {/* Map Layer */}
-            <div className="w-full h-full bg-secondary/30 relative overflow-hidden">
-              {/* Contour Lines */}
-              <svg className="absolute inset-0 w-full h-full opacity-30" viewBox="0 0 100 100" preserveAspectRatio="none">
-                <path d="M0,50 Q25,40 50,50 T100,50" fill="none" stroke="currentColor" className="text-soil" strokeWidth="0.5" />
-                <path d="M0,60 Q25,50 50,60 T100,60" fill="none" stroke="currentColor" className="text-soil" strokeWidth="0.5" />
-                <path d="M0,70 Q25,60 50,70 T100,70" fill="none" stroke="currentColor" className="text-soil" strokeWidth="0.5" />
-                <path d="M0,80 Q25,70 50,80 T100,80" fill="none" stroke="currentColor" className="text-soil" strokeWidth="0.5" />
-              </svg>
-
-              {/* Grid Overlay */}
-              <div className="absolute inset-0 grid-pattern opacity-50 mix-blend-multiply" />
-
-              {/* Active Survey Point */}
-              <div className="absolute top-1/3 right-1/4">
-                <div className="w-4 h-4 border-2 border-accent rounded-full flex items-center justify-center relative">
-                  <div className="w-1 h-1 bg-accent rounded-full" />
-                  <div className="absolute w-8 h-8 border border-accent/30 rounded-full marker-ping" />
-                </div>
-                <div className="absolute left-6 top-0 bg-foreground text-background text-[10px] font-mono px-2 py-1 whitespace-nowrap">
-                  PT: 1045 <br /> EL: 45.2m
-                </div>
+            {/* Bottom Stats */}
+            <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between">
+              <div className="bg-foreground/80 backdrop-blur-sm px-3 py-2 border border-background/10">
+                <span className="font-mono text-[10px] text-background/50 block">SCAN RANGE</span>
+                <span className="font-mono text-sm text-accent font-bold">1,250m</span>
               </div>
-
-              {/* Secondary Point */}
-              <div className="absolute bottom-1/4 left-1/3">
-                <div className="w-3 h-3 border-2 border-measure rounded-full flex items-center justify-center">
-                  <div className="w-1 h-1 bg-measure rounded-full" />
-                </div>
+              <div className="bg-foreground/80 backdrop-blur-sm px-3 py-2 border border-background/10">
+                <span className="font-mono text-[10px] text-background/50 block">DENSITY</span>
+                <span className="font-mono text-sm text-cyan-400 font-bold">50pts/m²</span>
+              </div>
+              <div className="bg-foreground/80 backdrop-blur-sm px-3 py-2 border border-background/10">
+                <span className="font-mono text-[10px] text-background/50 block">STATUS</span>
+                <span className="font-mono text-sm text-green-400 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                  LIVE
+                </span>
               </div>
             </div>
           </div>
