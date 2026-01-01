@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/App';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
@@ -49,6 +48,7 @@ const Admin = () => {
   const [contacts, setContacts] = useState<ContactSubmission[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [supabaseClient, setSupabaseClient] = useState<any>(null);
   
   // Appointment form state
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
@@ -67,6 +67,19 @@ const Admin = () => {
     meeting_link: '',
   });
 
+  // Initialize Supabase client
+  useEffect(() => {
+    const initSupabase = async () => {
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        setSupabaseClient(supabase);
+      } catch (err) {
+        console.error('Failed to load supabase:', err);
+      }
+    };
+    initSupabase();
+  }, []);
+
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/auth');
@@ -74,17 +87,18 @@ const Admin = () => {
   }, [user, isLoading, navigate]);
 
   useEffect(() => {
-    if (user && isAdmin) {
+    if (user && isAdmin && supabaseClient) {
       fetchData();
     }
-  }, [user, isAdmin]);
+  }, [user, isAdmin, supabaseClient]);
 
   const fetchData = async () => {
+    if (!supabaseClient) return;
     setLoading(true);
     try {
       const [contactsRes, appointmentsRes] = await Promise.all([
-        supabase.from('contact_submissions').select('*').order('created_at', { ascending: false }),
-        supabase.from('appointments').select('*').order('appointment_date', { ascending: true }),
+        supabaseClient.from('contact_submissions').select('*').order('created_at', { ascending: false }),
+        supabaseClient.from('appointments').select('*').order('appointment_date', { ascending: true }),
       ]);
 
       if (contactsRes.data) setContacts(contactsRes.data);
@@ -102,9 +116,10 @@ const Admin = () => {
   };
 
   const handleSaveAppointment = async () => {
+    if (!supabaseClient) return;
     try {
       if (editingAppointment) {
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from('appointments')
           .update({
             ...appointmentForm,
@@ -118,7 +133,7 @@ const Admin = () => {
         if (error) throw error;
         toast({ title: 'Appointment Updated' });
       } else {
-        const { error } = await supabase
+        const { error } = await supabaseClient
           .from('appointments')
           .insert({
             ...appointmentForm,
@@ -140,10 +155,11 @@ const Admin = () => {
   };
 
   const handleDeleteAppointment = async (id: string) => {
+    if (!supabaseClient) return;
     if (!confirm('Are you sure you want to delete this appointment?')) return;
     
     try {
-      const { error } = await supabase.from('appointments').delete().eq('id', id);
+      const { error } = await supabaseClient.from('appointments').delete().eq('id', id);
       if (error) throw error;
       toast({ title: 'Appointment Deleted' });
       fetchData();
@@ -153,10 +169,11 @@ const Admin = () => {
   };
 
   const handleDeleteContact = async (id: string) => {
+    if (!supabaseClient) return;
     if (!confirm('Are you sure you want to delete this contact submission?')) return;
     
     try {
-      const { error } = await supabase.from('contact_submissions').delete().eq('id', id);
+      const { error } = await supabaseClient.from('contact_submissions').delete().eq('id', id);
       if (error) throw error;
       toast({ title: 'Contact Deleted' });
       fetchData();

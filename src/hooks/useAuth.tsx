@@ -1,12 +1,12 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAdmin: boolean;
   isLoading: boolean;
+  isConfigured: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -19,49 +19,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [initError, setInitError] = useState<string | null>(null);
+  const [isConfigured, setIsConfigured] = useState(false);
+  const [supabaseClient, setSupabaseClient] = useState<any>(null);
 
   useEffect(() => {
-    try {
-      // Set up auth state listener FIRST
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (event, session) => {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          // Defer admin check with setTimeout to avoid deadlock
-          if (session?.user) {
-            setTimeout(() => {
-              checkAdminRole(session.user.id);
-            }, 0);
-          } else {
-            setIsAdmin(false);
-          }
-        }
-      );
+    const initAuth = async () => {
+      try {
+        // Dynamically import supabase to catch initialization errors
+        const { supabase } = await import('@/integrations/supabase/client');
+        setSupabaseClient(supabase);
+        setIsConfigured(true);
 
-      // THEN check for existing session
-      supabase.auth.getSession().then(({ data: { session } }) => {
+        // Set up auth state listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          (event, session) => {
+            setSession(session);
+            setUser(session?.user ?? null);
+            
+            if (session?.user) {
+              setTimeout(() => {
+                checkAdminRole(supabase, session.user.id);
+              }, 0);
+            } else {
+              setIsAdmin(false);
+            }
+          }
+        );
+
+        // Check for existing session
+        const { data: { session } } = await supabase.auth.getSession();
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          checkAdminRole(session.user.id);
+          await checkAdminRole(supabase, session.user.id);
         }
         setIsLoading(false);
-      }).catch((err) => {
-        console.error('Failed to get session:', err);
-        setIsLoading(false);
-      });
 
-      return () => subscription.unsubscribe();
-    } catch (err) {
-      console.error('Auth initialization error:', err);
-      setIsLoading(false);
-    }
+        return () => subscription.unsubscribe();
+      } catch (err) {
+        console.error('Supabase initialization failed:', err);
+        setIsConfigured(false);
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
-  const checkAdminRole = async (userId: string) => {
+  const checkAdminRole = async (supabase: any, userId: string) => {
     try {
       const { data, error } = await supabase.rpc('has_role', {
         _user_id: userId,
@@ -78,13 +84,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!supabaseClient) {
+      return { error: new Error('Authentication not available') };
+    }
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     return { error };
   };
 
   const signUp = async (email: string, password: string) => {
+    if (!supabaseClient) {
+      return { error: new Error('Authentication not available') };
+    }
     const redirectUrl = `${window.location.origin}/`;
-    const { error } = await supabase.auth.signUp({
+    const { error } = await supabaseClient.auth.signUp({
       email,
       password,
       options: { emailRedirectTo: redirectUrl }
@@ -93,12 +105,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (supabaseClient) {
+      await supabaseClient.auth.signOut();
+    }
     setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isAdmin, isLoading, isConfigured, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
