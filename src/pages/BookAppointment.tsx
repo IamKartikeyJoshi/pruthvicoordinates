@@ -4,9 +4,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "@/hooks/use-toast";
 import { useSupabase } from "@/hooks/useSupabase";
+import { generateWhatsAppLink } from "@/lib/whatsapp";
 import { 
   Calendar, Clock, MapPin, User, Mail, Phone, 
-  ArrowLeft, ArrowRight, CheckCircle, FileText 
+  ArrowLeft, ArrowRight, CheckCircle, FileText, MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,11 +34,12 @@ const timeSlots = [
 
 const BookAppointment = () => {
   const navigate = useNavigate();
-  const { supabase } = useSupabase();
+  const { supabase, isLoading: supabaseLoading, isMock } = useSupabase();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submittedData, setSubmittedData] = useState<typeof formData | null>(null);
   
   const [formData, setFormData] = useState({
     projectType: "",
@@ -135,40 +137,46 @@ const BookAppointment = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('appointments')
-        .insert({
-          project_type: formData.projectType,
-          client_name: formData.clientName,
-          client_email: formData.clientEmail,
-          client_phone: formData.clientPhone,
-          location: formData.location || null,
-          appointment_date: formData.appointmentDate,
-          appointment_time: formData.appointmentTime,
-          notes: formData.notes || null,
-          status: 'pending',
-        });
+      // Save to database (real or mock)
+      if (supabase) {
+        const { error } = await supabase
+          .from('appointments')
+          .insert({
+            project_type: formData.projectType,
+            client_name: formData.clientName,
+            client_email: formData.clientEmail,
+            client_phone: formData.clientPhone,
+            location: formData.location || null,
+            appointment_date: formData.appointmentDate,
+            appointment_time: formData.appointmentTime,
+            notes: formData.notes || null,
+            status: 'pending',
+          });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      // Send email notification
-      try {
-        await supabase.functions.invoke('send-appointment-email', {
-          body: {
-            clientName: formData.clientName,
-            clientEmail: formData.clientEmail,
-            clientPhone: formData.clientPhone,
-            projectType: formData.projectType,
-            location: formData.location,
-            appointmentDate: formData.appointmentDate,
-            appointmentTime: formData.appointmentTime,
-            notes: formData.notes,
-          },
-        });
-      } catch (emailError) {
-        console.error("Email notification failed:", emailError);
+        // Try to send email notification (non-blocking)
+        if (!isMock) {
+          try {
+            await supabase.functions.invoke('send-appointment-email', {
+              body: {
+                clientName: formData.clientName,
+                clientEmail: formData.clientEmail,
+                clientPhone: formData.clientPhone,
+                projectType: formData.projectType,
+                location: formData.location,
+                appointmentDate: formData.appointmentDate,
+                appointmentTime: formData.appointmentTime,
+                notes: formData.notes,
+              },
+            });
+          } catch (emailError) {
+            console.error("Email notification failed:", emailError);
+          }
+        }
       }
 
+      setSubmittedData(formData);
       setSubmitted(true);
       toast({
         title: "Appointment Requested!",
@@ -219,7 +227,16 @@ const BookAppointment = () => {
     });
   };
 
-  if (submitted) {
+  if (submitted && submittedData) {
+    const whatsAppLink = generateWhatsAppLink({
+      clientName: submittedData.clientName,
+      clientPhone: submittedData.clientPhone,
+      projectType: submittedData.projectType,
+      appointmentDate: submittedData.appointmentDate,
+      appointmentTime: submittedData.appointmentTime,
+      location: submittedData.location || undefined,
+    });
+
     return (
       <div className="min-h-screen bg-background page-bg">
         <Header />
@@ -234,19 +251,30 @@ const BookAppointment = () => {
                   Appointment <span className="italic text-accent">Requested</span>
                 </h2>
                 <p className="text-foreground/70 text-lg mb-4">
-                  Thank you, <span className="text-accent font-semibold">{formData.clientName}</span>!
+                  Thank you, <span className="text-accent font-semibold">{submittedData.clientName}</span>!
                 </p>
                 <p className="text-foreground/60 mb-8">
-                  Your appointment request for <span className="font-semibold">{formatDate(formData.appointmentDate)}</span> at <span className="font-semibold">{formData.appointmentTime}</span> has been received.
+                  Your appointment request for <span className="font-semibold">{formatDate(submittedData.appointmentDate)}</span> at <span className="font-semibold">{submittedData.appointmentTime}</span> has been received.
                   <br />Our team will confirm your appointment within 24 hours.
                 </p>
                 <div className="bg-secondary/30 p-6 rounded-lg mb-8">
                   <p className="font-mono text-sm text-foreground/60 mb-2">PROJECT TYPE</p>
-                  <p className="font-serif text-xl text-accent">{formData.projectType}</p>
+                  <p className="font-serif text-xl text-accent">{submittedData.projectType}</p>
                 </div>
-                <Button onClick={() => navigate('/contact')} variant="outline">
-                  Return to Contact
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <a
+                    href={whatsAppLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    Send on WhatsApp
+                  </a>
+                  <Button onClick={() => navigate('/contact')} variant="outline">
+                    Return to Contact
+                  </Button>
+                </div>
               </div>
             </div>
           </section>
