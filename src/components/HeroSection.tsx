@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/hero-surveying.jpg";
+import InteractiveCoordinateDisplay from "./InteractiveCoordinateDisplay";
 
 const HeroSection = () => {
   return (
@@ -51,62 +51,10 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Hero Visual - Total Station Image */}
-        <div className="lg:col-span-5 relative h-[400px] lg:h-[600px] w-full flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <div className="relative w-full h-full border border-foreground/10 bg-popover shadow-2xl lg:rotate-2 hover:rotate-0 transition-transform duration-700 ease-out overflow-hidden">
-            {/* Surveying Equipment Image */}
-            <img 
-              src={heroImage} 
-              alt="Professional Total Station surveying equipment at golden hour" 
-              className="w-full h-full object-cover"
-            />
-            
-            {/* Overlay with gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-foreground/20" />
-            
-            {/* Tech Data Overlay */}
-            <div className="absolute left-4 top-4 z-20 bg-foreground/90 backdrop-blur-md p-3 shadow-xl border border-background/20">
-              <div className="flex justify-between items-end mb-2">
-                <h4 className="font-mono text-xs font-bold text-background/60">TOTAL STATION</h4>
-                <div className="flex gap-1">
-                  <div className="w-1 h-1 bg-accent rounded-full animate-pulse" />
-                  <div className="w-1 h-1 bg-measure rounded-full" />
-                  <div className="w-1 h-1 bg-background/40 rounded-full" />
-                </div>
-              </div>
-              <div className="space-y-1 font-mono text-[10px] text-background/80">
-                <div className="flex justify-between gap-8">
-                  <span className="text-background/50">Accuracy:</span>
-                  <span className="text-accent">±1mm</span>
-                </div>
-                <div className="flex justify-between gap-8">
-                  <span className="text-background/50">Range:</span>
-                  <span className="text-background">5,000m</span>
-                </div>
-                <div className="flex justify-between gap-8">
-                  <span className="text-background/50">Angular:</span>
-                  <span className="text-cyan-400">1" precision</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Stats */}
-            <div className="absolute bottom-4 left-4 right-4 z-20 flex justify-between">
-              <div className="bg-foreground/80 backdrop-blur-sm px-3 py-2 border border-background/10">
-                <span className="font-mono text-[10px] text-background/50 block">CERTIFIED</span>
-                <span className="font-mono text-sm text-accent font-bold">RERA</span>
-              </div>
-              <div className="bg-foreground/80 backdrop-blur-sm px-3 py-2 border border-background/10">
-                <span className="font-mono text-[10px] text-background/50 block">EXPERIENCE</span>
-                <span className="font-mono text-sm text-cyan-400 font-bold">15+ YRS</span>
-              </div>
-              <div className="bg-foreground/80 backdrop-blur-sm px-3 py-2 border border-background/10">
-                <span className="font-mono text-[10px] text-background/50 block">PROJECTS</span>
-                <span className="font-mono text-sm text-green-400 font-bold flex items-center gap-1">
-                  500+
-                </span>
-              </div>
-            </div>
+        {/* Hero Visual - Interactive Coordinate Display */}
+        <div className="lg:col-span-5 relative h-[400px] lg:h-[550px] w-full flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <div className="relative w-full h-full border border-foreground/10 shadow-2xl lg:rotate-1 hover:rotate-0 transition-transform duration-700 ease-out overflow-hidden">
+            <InteractiveCoordinateDisplay />
           </div>
         </div>
       </div>

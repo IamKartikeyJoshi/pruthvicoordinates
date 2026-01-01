@@ -163,13 +163,19 @@ const Contact = () => {
               ))}
             </div>
 
-            {/* Map Placeholder */}
-            <div className="mt-12 h-[400px] bg-foreground/5 border border-foreground/10 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-foreground/20 mx-auto mb-4" />
-                <p className="text-foreground/40 font-mono text-sm">Interactive Map</p>
-                <p className="text-foreground/30 text-xs mt-1">Coming Soon</p>
-              </div>
+            {/* Google Maps Embed - Ahmedabad Office */}
+            <div className="mt-12 h-[400px] border border-foreground/10 overflow-hidden">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.0427069847776!2d72.50860231496791!3d23.02505098494685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b2b0c0b0001%3A0x0!2sTitanium%20City%20Center!5e0!3m2!1sen!2sin!4v1640000000000!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Pruthvi Coordinates Office Location"
+                className="grayscale hover:grayscale-0 transition-all duration-500"
+              />
             </div>
           </div>
         </section>
