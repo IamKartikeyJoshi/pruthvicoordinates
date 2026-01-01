@@ -19,37 +19,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [initError, setInitError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+    try {
+      // Set up auth state listener FIRST
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          // Defer admin check with setTimeout to avoid deadlock
+          if (session?.user) {
+            setTimeout(() => {
+              checkAdminRole(session.user.id);
+            }, 0);
+          } else {
+            setIsAdmin(false);
+          }
+        }
+      );
+
+      // THEN check for existing session
+      supabase.auth.getSession().then(({ data: { session } }) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer admin check with setTimeout to avoid deadlock
         if (session?.user) {
-          setTimeout(() => {
-            checkAdminRole(session.user.id);
-          }, 0);
-        } else {
-          setIsAdmin(false);
+          checkAdminRole(session.user.id);
         }
-      }
-    );
+        setIsLoading(false);
+      }).catch((err) => {
+        console.error('Failed to get session:', err);
+        setIsLoading(false);
+      });
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkAdminRole(session.user.id);
-      }
+      return () => subscription.unsubscribe();
+    } catch (err) {
+      console.error('Auth initialization error:', err);
       setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    }
   }, []);
 
   const checkAdminRole = async (userId: string) => {
