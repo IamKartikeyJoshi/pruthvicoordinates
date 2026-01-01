@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useSupabase } from "@/hooks/useSupabase";
 import { 
   Calendar, Clock, MapPin, User, Mail, Phone, 
   ArrowLeft, ArrowRight, CheckCircle, FileText 
@@ -33,6 +33,7 @@ const timeSlots = [
 
 const BookAppointment = () => {
   const navigate = useNavigate();
+  const { supabase } = useSupabase();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);

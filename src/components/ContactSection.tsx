@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Send, MapPin, Phone, Mail, CheckCircle, ArrowRight, ArrowLeft, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useSupabase } from "@/hooks/useSupabase";
 import { contactFormSchema } from "@/lib/validations";
 import { z } from "zod";
 
 const ContactSection = () => {
+  const { supabase } = useSupabase();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     projectType: "",
