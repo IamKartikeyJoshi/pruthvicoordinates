@@ -17,6 +17,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const BookAppointment = lazy(() => import("./pages/BookAppointment"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Admin = lazy(() => import("./pages/Admin"));
+const ViewAppointments = lazy(() => import("./pages/ViewAppointments"));
 
 const queryClient = new QueryClient();
 
@@ -179,6 +180,7 @@ const App = () => (
               <Route path="/book-appointment" element={<BookAppointment />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/view-appointments" element={<ViewAppointments />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
