@@ -5,9 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { 
-  MapPin, LogOut, Calendar, Mail, Phone, User, 
-  Trash2, Edit, Plus, X, Check, Clock, MessageSquare,
-  ExternalLink
+  MapPin, LogOut, Calendar, Mail, Phone, 
+  Trash2, Edit, Plus, X, Check, Clock, MessageSquare
 } from 'lucide-react';
 import { generateWhatsAppLink } from '@/lib/whatsapp';
 
@@ -41,7 +40,7 @@ interface Appointment {
 }
 
 const Admin = () => {
-  const { user, isAdmin, isLoading, signOut } = useAuth();
+  const { user, isAdmin, isLoading, isConfigured, signOut } = useAuth();
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState<'appointments' | 'contacts'>('appointments');
@@ -232,6 +231,21 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse font-mono text-foreground/60">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isConfigured) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6">
+        <div className="text-center">
+          <MapPin className="w-12 h-12 text-accent mx-auto mb-4" />
+          <h1 className="font-serif text-2xl text-foreground mb-2">Setup Required</h1>
+          <p className="text-foreground/60 text-sm mb-6">
+            The system is being configured. Please try again in a moment.
+          </p>
+          <Button onClick={() => navigate('/')} variant="outline">Go to Homepage</Button>
+        </div>
       </div>
     );
   }

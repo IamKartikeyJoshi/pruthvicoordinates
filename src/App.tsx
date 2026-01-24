@@ -26,6 +26,7 @@ interface SimpleAuthContextType {
   session: any;
   isAdmin: boolean;
   isLoading: boolean;
+  isConfigured: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -36,6 +37,7 @@ const SimpleAuthContext = createContext<SimpleAuthContextType>({
   session: null,
   isAdmin: false,
   isLoading: false,
+  isConfigured: false,
   signIn: async () => ({ error: null }),
   signUp: async () => ({ error: null }),
   signOut: async () => {},
@@ -48,6 +50,7 @@ function SimpleAuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfigured, setIsConfigured] = useState(false);
   const [supabase, setSupabase] = useState<any>(null);
 
   useEffect(() => {
@@ -60,7 +63,9 @@ function SimpleAuthProvider({ children }: { children: ReactNode }) {
         if (!mounted) return;
         
         const client = module.supabase;
+        if (!client) throw new Error("Supabase client not initialized");
         setSupabase(client);
+        setIsConfigured(true);
 
         const { data: { subscription: sub } } = client.auth.onAuthStateChange(
           async (event: any, sess: any) => {
@@ -106,7 +111,10 @@ function SimpleAuthProvider({ children }: { children: ReactNode }) {
         if (mounted) setIsLoading(false);
       } catch (err) {
         console.error("Auth init failed:", err);
-        if (mounted) setIsLoading(false);
+        if (mounted) {
+          setIsConfigured(false);
+          setIsLoading(false);
+        }
       }
     };
 
@@ -140,7 +148,7 @@ function SimpleAuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <SimpleAuthContext.Provider value={{ user, session, isAdmin, isLoading, signIn, signUp, signOut }}>
+    <SimpleAuthContext.Provider value={{ user, session, isAdmin, isLoading, isConfigured, signIn, signUp, signOut }}>
       {children}
     </SimpleAuthContext.Provider>
   );
