@@ -19,7 +19,7 @@ const Auth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
-  const { user, signIn, isLoading } = useAuth();
+  const { user, signIn, isLoading, isConfigured } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,6 +84,23 @@ const Auth = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse font-mono text-foreground/60">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!isConfigured) {
+    return (
+      <div className="min-h-screen bg-foreground flex items-center justify-center px-6">
+        <div className="text-center">
+          <MapPin className="w-12 h-12 text-accent mx-auto mb-4" />
+          <h1 className="font-serif text-2xl text-background mb-2">Setup Required</h1>
+          <p className="text-background/60 text-sm mb-6">
+            The authentication system is being configured. Please try again in a moment.
+          </p>
+          <a href="/" className="text-accent hover:text-accent/80 text-sm font-mono uppercase tracking-widest">
+            ← Back to website
+          </a>
+        </div>
       </div>
     );
   }
