@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/App';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
-import { Eye, EyeOff, MapPin, Lock, Mail } from 'lucide-react';
+import { Eye, EyeOff, MapPin, Lock, Mail, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 
 const authSchema = z.object({
@@ -17,6 +17,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResetMode, setIsResetMode] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   
   const { user, signIn, isLoading, isConfigured } = useAuth();
@@ -30,6 +31,11 @@ const Auth = () => {
 
   const validateForm = () => {
     try {
+      if (isResetMode) {
+        z.string().email('Please enter a valid email address').parse(email);
+        setErrors({});
+        return true;
+      }
       authSchema.parse({ email, password });
       setErrors({});
       return true;
@@ -46,8 +52,41 @@ const Auth = () => {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!validateForm()) return;
+    setIsSubmitting(true);
+
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Reset Email Sent',
+        description: 'Check your email for a password reset link.',
+      });
+      setIsResetMode(false);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to send reset email',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isResetMode) {
+      handleResetPassword();
+      return;
+    }
     
     if (!validateForm()) return;
     
@@ -115,10 +154,12 @@ const Auth = () => {
             <span className="font-serif text-2xl text-background">Pruthvi</span>
           </div>
           <h1 className="font-serif text-3xl text-background mb-2">
-            Admin Login
+            {isResetMode ? 'Reset Password' : 'Admin Login'}
           </h1>
           <p className="text-background/60 text-sm">
-            Sign in to manage appointments and contacts
+            {isResetMode 
+              ? 'Enter your email to receive a reset link'
+              : 'Sign in to manage appointments and contacts'}
           </p>
         </div>
 
@@ -143,46 +184,74 @@ const Auth = () => {
             )}
           </div>
 
-          <div>
-            <label className="block font-mono text-xs text-background/60 mb-2 uppercase tracking-widest">
-              Password
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-background/40" />
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-background/10 border-background/20 text-background pl-12 pr-12 h-12 placeholder:text-background/30"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-background/40 hover:text-background/60"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+          {!isResetMode && (
+            <div>
+              <label className="block font-mono text-xs text-background/60 mb-2 uppercase tracking-widest">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-background/40" />
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-background/10 border-background/20 text-background pl-12 pr-12 h-12 placeholder:text-background/30"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-background/40 hover:text-background/60"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-accent text-xs mt-1">{errors.password}</p>
+              )}
             </div>
-            {errors.password && (
-              <p className="text-accent text-xs mt-1">{errors.password}</p>
-            )}
-          </div>
+          )}
 
           <Button
             type="submit"
             disabled={isSubmitting}
             className="w-full h-12 bg-accent hover:bg-accent/90 text-white font-mono uppercase tracking-widest"
           >
-            {isSubmitting ? 'Signing In...' : 'Sign In'}
+            {isSubmitting 
+              ? (isResetMode ? 'Sending...' : 'Signing In...') 
+              : (isResetMode ? 'Send Reset Link' : 'Sign In')}
           </Button>
         </form>
 
+        {/* Toggle reset mode */}
+        <div className="text-center mt-6">
+          <button
+            onClick={() => {
+              setIsResetMode(!isResetMode);
+              setErrors({});
+            }}
+            className="text-background/60 hover:text-background text-sm font-mono"
+          >
+            {isResetMode ? '← Back to Login' : 'Forgot Password?'}
+          </button>
+        </div>
+
+        {/* Quick access link */}
+        <div className="text-center mt-4 pt-4 border-t border-background/10">
+          <Link 
+            to="/view-appointments" 
+            className="text-accent hover:text-accent/80 text-xs font-mono uppercase tracking-widest"
+          >
+            View Appointments (Read-Only)
+          </Link>
+        </div>
+
         {/* Back to home */}
-        <div className="text-center mt-8">
-          <a href="/" className="text-background/40 hover:text-background/60 text-xs font-mono uppercase tracking-widest">
-            ← Back to website
-          </a>
+        <div className="text-center mt-6">
+          <Link to="/" className="text-background/40 hover:text-background/60 text-xs font-mono uppercase tracking-widest inline-flex items-center gap-2">
+            <ArrowLeft className="w-3 h-3" />
+            Back to website
+          </Link>
         </div>
       </div>
     </div>
