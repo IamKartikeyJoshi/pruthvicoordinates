@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import InteractiveCoordinateDisplay from "./InteractiveCoordinateDisplay";
+import heroImage from "@/assets/hero-surveyor.jpg";
 
 const HeroSection = () => {
   return (
@@ -51,10 +51,16 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Hero Visual - Interactive Coordinate Display */}
+        {/* Hero Visual - Static Image */}
         <div className="lg:col-span-5 relative h-[400px] lg:h-[550px] w-full flex items-center justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <div className="relative w-full h-full border border-foreground/10 shadow-2xl lg:rotate-1 hover:rotate-0 transition-transform duration-700 ease-out overflow-hidden">
-            <InteractiveCoordinateDisplay />
+            <img 
+              src={heroImage} 
+              alt="Professional surveyor at work with precision equipment" 
+              className="w-full h-full object-cover"
+            />
+            {/* Overlay gradient for better text readability if needed */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
           </div>
         </div>
       </div>

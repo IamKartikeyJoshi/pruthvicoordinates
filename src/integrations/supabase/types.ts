@@ -14,111 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      appointments: {
+      admin_settings: {
         Row: {
-          admin_notes: string | null
-          appointment_date: string
-          appointment_time: string
-          client_email: string
-          client_name: string
-          client_phone: string
-          created_at: string
-          id: string
-          location: string | null
-          meeting_link: string | null
-          notes: string | null
-          project_type: string
-          status: string
-          updated_at: string
+          id: number
+          is_admin_allowed: boolean
         }
         Insert: {
-          admin_notes?: string | null
-          appointment_date: string
-          appointment_time: string
-          client_email: string
-          client_name: string
-          client_phone: string
-          created_at?: string
-          id?: string
-          location?: string | null
-          meeting_link?: string | null
-          notes?: string | null
-          project_type: string
-          status?: string
-          updated_at?: string
+          id?: number
+          is_admin_allowed?: boolean
         }
         Update: {
-          admin_notes?: string | null
-          appointment_date?: string
-          appointment_time?: string
-          client_email?: string
-          client_name?: string
-          client_phone?: string
-          created_at?: string
-          id?: string
-          location?: string | null
-          meeting_link?: string | null
-          notes?: string | null
-          project_type?: string
-          status?: string
-          updated_at?: string
+          id?: number
+          is_admin_allowed?: boolean
         }
         Relationships: []
       }
-      contact_submissions: {
+      requests: {
         Row: {
+          appointment_date: string | null
+          appointment_time: string | null
           created_at: string
           email: string
           id: string
           location: string | null
+          meeting_link: string | null
           message: string | null
           name: string
           phone: string
-          project_type: string
-          reference_code: string | null
+          project_type: string | null
+          tracking_code: string
+          type: string
         }
         Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
           created_at?: string
           email: string
           id?: string
           location?: string | null
+          meeting_link?: string | null
           message?: string | null
           name: string
           phone: string
-          project_type: string
-          reference_code?: string | null
+          project_type?: string | null
+          tracking_code: string
+          type: string
         }
         Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
           created_at?: string
           email?: string
           id?: string
           location?: string | null
+          meeting_link?: string | null
           message?: string | null
           name?: string
           phone?: string
-          project_type?: string
-          reference_code?: string | null
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
+          project_type?: string | null
+          tracking_code?: string
+          type?: string
         }
         Relationships: []
       }
@@ -127,16 +82,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -263,8 +212,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const
