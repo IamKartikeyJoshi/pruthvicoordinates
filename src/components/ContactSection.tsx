@@ -1,12 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Send, MapPin, Phone, Mail, CheckCircle, ArrowRight, ArrowLeft, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { useSupabase } from "@/hooks/useSupabase";
+import { supabase } from "@/integrations/supabase/client";
 import { contactFormSchema } from "@/lib/validations";
 import { z } from "zod";
 
 const ContactSection = () => {
-  const { supabase } = useSupabase();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     projectType: "",
@@ -18,7 +18,7 @@ const ContactSection = () => {
   });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [referenceCode, setReferenceCode] = useState("");
+  const [trackingCode, setTrackingCode] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const projectTypes = [
@@ -32,6 +32,16 @@ const ContactSection = () => {
     { id: "bathymetry", label: "Bathymetry Survey", icon: "🌊" },
     { id: "other", label: "Other / Consultation", icon: "💬" },
   ];
+
+  // Generate tracking code
+  const generateTrackingCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'PRU-';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
 
   const handleProjectSelect = (type: string) => {
     setFormData({ ...formData, projectType: type });
@@ -83,42 +93,25 @@ const ContactSection = () => {
     }
 
     setIsSubmitting(true);
-    const refCode = `PRU-${Date.now().toString(36).toUpperCase()}`;
+    const newTrackingCode = generateTrackingCode();
 
     try {
       const { error } = await supabase
-        .from('contact_submissions')
+        .from('requests')
         .insert({
-          project_type: formData.projectType,
+          type: 'contact',
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
+          project_type: formData.projectType,
           location: formData.location || null,
           message: formData.message || null,
-          reference_code: refCode,
+          tracking_code: newTrackingCode,
         });
 
       if (error) throw error;
 
-      // Send email notification
-      try {
-        await supabase.functions.invoke('send-contact-email', {
-          body: {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            projectType: formData.projectType,
-            location: formData.location,
-            message: formData.message,
-            referenceCode: refCode,
-          },
-        });
-      } catch (emailError) {
-        console.error("Email notification failed:", emailError);
-        // Don't fail the submission if email fails
-      }
-
-      setReferenceCode(refCode);
+      setTrackingCode(newTrackingCode);
       setSubmitted(true);
       toast({
         title: "Message Sent!",
@@ -163,14 +156,28 @@ const ContactSection = () => {
             <h2 className="font-serif text-4xl md:text-5xl mb-6">
               Coordinates <span className="italic">Received</span>
             </h2>
-            <p className="text-background/70 text-lg mb-8">
+            <p className="text-background/70 text-lg mb-6">
               Thank you, <span className="text-accent font-semibold">{formData.name}</span>! 
               Our team will review your <span className="font-mono text-sm">{formData.projectType}</span> requirements 
               and reach out within 24 hours.
             </p>
-            <div className="font-mono text-xs text-background/50 border border-background/20 inline-block px-4 py-2">
-              REF: {referenceCode}
+            
+            {/* Tracking Code Display */}
+            <div className="bg-background/10 border-2 border-accent/30 p-6 mb-6 inline-block">
+              <p className="text-background/60 text-sm mb-2">Your Tracking Code</p>
+              <p className="font-mono text-3xl text-accent font-bold">{trackingCode}</p>
             </div>
+            
+            <p className="text-background/50 text-sm mb-6">
+              Save this code to track your request status
+            </p>
+            
+            <Link 
+              to={`/track/${trackingCode}`}
+              className="text-accent hover:text-accent/80 font-mono text-sm underline"
+            >
+              Track Your Request →
+            </Link>
           </div>
         </div>
       </section>
@@ -419,34 +426,32 @@ const ContactSection = () => {
 
           {/* Contact Info */}
           <div className="mt-16 pt-12 border-t border-background/10">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
-                <div className="w-12 h-12 border border-background/20 flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <h4 className="font-mono text-xs text-background/60 uppercase tracking-widest mb-1">Phone</h4>
-                  <p className="text-background">+91 98765 43210</p>
-                </div>
-              </div>
-              
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
-                <div className="w-12 h-12 border border-background/20 flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-accent" />
-                </div>
-                <div>
-                  <h4 className="font-mono text-xs text-background/60 uppercase tracking-widest mb-1">Email</h4>
-                  <p className="text-background">info@pruthvisurvey.com</p>
-                </div>
-              </div>
-              
-              <div className="flex flex-col md:flex-row items-center md:items-start gap-4">
-                <div className="w-12 h-12 border border-background/20 flex items-center justify-center">
+            <div className="grid md:grid-cols-3 gap-8 text-center md:text-left">
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-mono text-xs text-background/60 uppercase tracking-widest mb-1">Office</h4>
-                  <p className="text-background">402, Titanium City Center, Ahmedabad</p>
+                  <h4 className="font-mono text-xs text-background/50 uppercase tracking-widest mb-1">Location</h4>
+                  <p className="text-background/80">Mumbai, Maharashtra</p>
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
+                  <Phone className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <h4 className="font-mono text-xs text-background/50 uppercase tracking-widest mb-1">Phone</h4>
+                  <p className="text-background/80">+91 98765 43210</p>
+                </div>
+              </div>
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <h4 className="font-mono text-xs text-background/50 uppercase tracking-widest mb-1">Email</h4>
+                  <p className="text-background/80">info@pruthvi.co.in</p>
                 </div>
               </div>
             </div>

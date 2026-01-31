@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { toast } from "@/hooks/use-toast";
-import { useSupabase } from "@/hooks/useSupabase";
-import { generateWhatsAppLink } from "@/lib/whatsapp";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Calendar, Clock, MapPin, User, Mail, Phone, 
-  ArrowLeft, ArrowRight, CheckCircle, FileText, MessageCircle
+  ArrowLeft, ArrowRight, CheckCircle, FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,16 +38,15 @@ interface FormData {
   location: string;
   appointmentDate: string;
   appointmentTime: string;
-  meetingLink: string;
   notes: string;
 }
 
 const BookAppointment = () => {
   const navigate = useNavigate();
-  const { supabase, isMock } = useSupabase();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [trackingCode, setTrackingCode] = useState("");
   
   const [formData, setFormData] = useState<FormData>({
     projectType: "",
@@ -59,11 +57,20 @@ const BookAppointment = () => {
     location: "",
     appointmentDate: "",
     appointmentTime: "",
-    meetingLink: "",
     notes: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Generate tracking code
+  const generateTrackingCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'PRU-';
+    for (let i = 0; i < 6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
 
   // Generate next 30 available days (skip Sundays)
   const getAvailableDates = () => {
@@ -164,44 +171,25 @@ const BookAppointment = () => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
+    const newTrackingCode = generateTrackingCode();
 
     try {
-      if (supabase) {
-        await supabase.from('appointments').insert({
-          project_type: formData.projectType,
-          client_name: formData.clientName,
-          client_email: formData.clientEmail,
-          client_phone: formData.clientPhone,
-          location: formData.location || null,
-          appointment_date: formData.appointmentDate,
-          appointment_time: formData.appointmentTime,
-          meeting_link: formData.meetingLink || null,
-          notes: formData.notes || null,
-          status: 'pending',
-        });
+      const { error } = await supabase.from('requests').insert({
+        type: 'appointment',
+        name: formData.clientName,
+        email: formData.clientEmail,
+        phone: formData.clientPhone,
+        project_type: formData.projectLabel,
+        location: formData.location || null,
+        message: formData.notes || null,
+        tracking_code: newTrackingCode,
+        appointment_date: formData.appointmentDate,
+        appointment_time: formData.appointmentTime,
+      });
 
-        // Try to send email notification
-        if (!isMock) {
-          try {
-            await supabase.functions.invoke('send-appointment-email', {
-              body: {
-                clientName: formData.clientName,
-                clientEmail: formData.clientEmail,
-                clientPhone: formData.clientPhone,
-                projectType: formData.projectLabel,
-                location: formData.location,
-                appointmentDate: formData.appointmentDate,
-                appointmentTime: formData.appointmentTime,
-                meetingLink: formData.meetingLink,
-                notes: formData.notes,
-              },
-            });
-          } catch (e) {
-            console.error("Email notification failed:", e);
-          }
-        }
-      }
+      if (error) throw error;
 
+      setTrackingCode(newTrackingCode);
       setSubmitted(true);
       toast({
         title: "Appointment Requested!",
@@ -221,16 +209,6 @@ const BookAppointment = () => {
 
   // Success Screen
   if (submitted) {
-    const whatsAppLink = generateWhatsAppLink({
-      clientName: formData.clientName,
-      clientPhone: formData.clientPhone,
-      projectType: formData.projectLabel,
-      appointmentDate: formData.appointmentDate,
-      appointmentTime: formData.appointmentTime,
-      location: formData.location || undefined,
-      meetingLink: formData.meetingLink || undefined,
-    });
-
     return (
       <div className="min-h-screen bg-background page-bg">
         <Header />
@@ -249,38 +227,35 @@ const BookAppointment = () => {
                 </p>
                 <p className="text-foreground/60 mb-8">
                   Your appointment for <span className="font-semibold">{formatDateFull(formData.appointmentDate)}</span> at <span className="font-semibold">{formData.appointmentTime}</span> has been received.
-                  <br />Our team will confirm within 24 hours.
                 </p>
-                
-                <div className="bg-secondary/30 border border-foreground/10 p-6 mb-8 text-left">
-                  <div className="grid grid-cols-2 gap-4 font-mono text-sm">
-                    <div>
-                      <span className="text-foreground/50 text-xs">Survey Type</span>
-                      <p className="text-accent">{formData.projectLabel}</p>
-                    </div>
-                    <div>
-                      <span className="text-foreground/50 text-xs">Date & Time</span>
-                      <p className="text-foreground">{formatDateDisplay(formData.appointmentDate)}, {formData.appointmentTime}</p>
-                    </div>
-                    {formData.location && (
-                      <div className="col-span-2">
-                        <span className="text-foreground/50 text-xs">Location</span>
-                        <p className="text-foreground">{formData.location}</p>
-                      </div>
-                    )}
-                  </div>
+
+                {/* Tracking Code Display */}
+                <div className="bg-secondary/50 border-2 border-accent/30 p-6 mb-6">
+                  <p className="text-foreground/60 text-sm mb-2">Your Tracking Code</p>
+                  <p className="font-mono text-3xl text-accent font-bold">{trackingCode}</p>
+                </div>
+
+                <div className="bg-popover border border-foreground/10 p-6 mb-8 text-left">
+                  <p className="text-foreground/60 text-sm mb-4">
+                    📌 <strong>Save this tracking code!</strong> You can use it to check your request status and access your meeting link once it's added by our team.
+                  </p>
+                  <p className="text-foreground/60 text-sm">
+                    🔗 Your meeting link will be added by the admin shortly. Check your request status at:
+                  </p>
+                  <Link 
+                    to={`/track/${trackingCode}`}
+                    className="text-accent hover:underline font-mono text-sm block mt-2"
+                  >
+                    /track/{trackingCode}
+                  </Link>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href={whatsAppLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    Send on WhatsApp
-                  </a>
+                  <Link to={`/track/${trackingCode}`}>
+                    <Button className="bg-accent hover:bg-accent/90">
+                      Track Your Request
+                    </Button>
+                  </Link>
                   <Button onClick={() => navigate('/')} variant="outline">
                     Return Home
                   </Button>
@@ -456,19 +431,6 @@ const BookAppointment = () => {
 
                     <div className="md:col-span-2">
                       <label className="flex items-center gap-2 font-mono text-xs text-foreground/60 mb-2 uppercase tracking-widest">
-                        <FileText className="w-4 h-4" /> Meeting Link (Optional)
-                      </label>
-                      <Input
-                        name="meetingLink"
-                        value={formData.meetingLink}
-                        onChange={handleInputChange}
-                        placeholder="Zoom/Google Meet link if online meeting"
-                        className="h-12"
-                      />
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <label className="flex items-center gap-2 font-mono text-xs text-foreground/60 mb-2 uppercase tracking-widest">
                         <FileText className="w-4 h-4" /> Additional Notes
                       </label>
                       <textarea
@@ -614,12 +576,6 @@ const BookAppointment = () => {
                         <div className="flex justify-between py-2 border-b border-foreground/10">
                           <span className="text-foreground/60">Location</span>
                           <span className="text-foreground">{formData.location}</span>
-                        </div>
-                      )}
-                      {formData.meetingLink && (
-                        <div className="flex justify-between py-2 border-b border-foreground/10">
-                          <span className="text-foreground/60">Meeting Link</span>
-                          <span className="text-foreground truncate max-w-[200px]">{formData.meetingLink}</span>
                         </div>
                       )}
                       {formData.notes && (
