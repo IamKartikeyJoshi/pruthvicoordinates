@@ -1,40 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { MapPin, ArrowLeft, Loader2 } from 'lucide-react';
+import { MapPin, ArrowLeft, Loader2, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { loginWithPassphrase, getStoredSession, verifySession } from '@/lib/adminSession';
+import { toast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 const Auth = () => {
+  const [passphrase, setPassphrase] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [isAllowed, setIsAllowed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAdminAccess = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('admin_settings')
-          .select('is_admin_allowed')
-          .eq('id', 1)
-          .single();
-
-        if (error) {
-          console.error('Error checking admin settings:', error);
-          setIsAllowed(false);
-        } else if (data?.is_admin_allowed) {
-          setIsAllowed(true);
-          // Redirect to admin dashboard
+    // Check if already logged in
+    const checkExisting = async () => {
+      const session = getStoredSession();
+      if (session) {
+        const valid = await verifySession();
+        if (valid) {
           navigate('/admin');
           return;
         }
-      } catch (err) {
-        console.error('Failed to check admin access:', err);
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
-
-    checkAdminAccess();
+    checkExisting();
   }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!passphrase.trim()) {
+      toast({ title: 'Error', description: 'Please enter the passphrase', variant: 'destructive' });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const result = await loginWithPassphrase(passphrase);
+
+    if (result.success) {
+      toast({ title: 'Welcome', description: 'Access granted' });
+      navigate('/admin');
+    } else {
+      toast({ title: 'Access Denied', description: result.error, variant: 'destructive' });
+    }
+
+    setIsSubmitting(false);
+  };
 
   if (isLoading) {
     return (
@@ -44,16 +59,47 @@ const Auth = () => {
     );
   }
 
-  // If admin is not allowed, show access denied
-  if (!isAllowed) {
-    return (
-      <div className="min-h-screen bg-foreground flex items-center justify-center px-6 page-bg">
-        <div className="text-center">
+  return (
+    <div className="min-h-screen bg-foreground flex items-center justify-center px-6 page-bg">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
           <MapPin className="w-12 h-12 text-accent mx-auto mb-4" />
-          <h1 className="font-serif text-3xl text-background mb-4">Admin Access Disabled</h1>
-          <p className="text-background/60 text-sm mb-8">
-            The admin panel is currently not available.
+          <h1 className="font-serif text-3xl text-background mb-2">Admin Access</h1>
+          <p className="text-background/60 text-sm">
+            Enter the admin passphrase to continue
           </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-foreground/40" />
+            <Input
+              type="password"
+              value={passphrase}
+              onChange={(e) => setPassphrase(e.target.value)}
+              placeholder="Enter passphrase"
+              className="pl-10 bg-background border-foreground/20 text-foreground"
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <Button 
+            type="submit" 
+            className="w-full bg-accent hover:bg-accent/90"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              'Access Admin Panel'
+            )}
+          </Button>
+        </form>
+
+        <div className="mt-8 text-center">
           <Link 
             to="/" 
             className="text-accent hover:text-accent/80 text-sm font-mono uppercase tracking-widest inline-flex items-center gap-2"
@@ -63,10 +109,8 @@ const Auth = () => {
           </Link>
         </div>
       </div>
-    );
-  }
-
-  return null;
+    </div>
+  );
 };
 
 export default Auth;

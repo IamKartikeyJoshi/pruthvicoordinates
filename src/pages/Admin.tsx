@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { 
   MapPin, Calendar, Mail, Phone, 
-  Trash2, Edit, X, Check, Clock, MessageSquare, Video, ArrowLeft, Loader2, User
+  Trash2, Edit, X, Check, Clock, MessageSquare, Video, Loader2, User, LogOut
 } from 'lucide-react';
 import { 
   generateAppointmentWhatsAppMessage, 
   generateContactWhatsAppMessage, 
   createWhatsAppLink 
 } from '@/lib/whatsappTemplates';
+import {
+  verifySession,
+  logout,
+  fetchAdminRequests,
+  updateAdminRequest,
+  deleteAdminRequest,
+  getStoredSession,
+} from '@/lib/adminSession';
 
 interface Request {
   id: string;
@@ -31,9 +38,9 @@ interface Request {
 }
 
 const Admin = () => {
-  const _navigate = useNavigate();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [isAllowed, setIsAllowed] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [requests, setRequests] = useState<Request[]>([]);
   const [filter, setFilter] = useState<'all' | 'appointment' | 'contact'>('all');
   
@@ -42,46 +49,43 @@ const Admin = () => {
   const [editForm, setEditForm] = useState<Partial<Request>>({});
 
   useEffect(() => {
-    const checkAndLoad = async () => {
-      try {
-        // Check if admin is allowed
-        const { data: settings, error: settingsError } = await supabase
-          .from('admin_settings')
-          .select('is_admin_allowed')
-          .eq('id', 1)
-          .single();
-
-        if (settingsError || !settings?.is_admin_allowed) {
-          setIsAllowed(false);
-          setIsLoading(false);
-          return;
-        }
-
-        setIsAllowed(true);
-        await fetchRequests();
-      } catch (err) {
-        console.error('Error:', err);
-        setIsAllowed(false);
-      } finally {
-        setIsLoading(false);
+    const checkAuth = async () => {
+      const session = getStoredSession();
+      if (!session) {
+        navigate('/auth');
+        return;
       }
+
+      const valid = await verifySession();
+      if (!valid) {
+        navigate('/auth');
+        return;
+      }
+
+      setIsAuthenticated(true);
+      await loadRequests();
+      setIsLoading(false);
     };
 
-    checkAndLoad();
-  }, []);
+    checkAuth();
+  }, [navigate]);
 
-  const fetchRequests = async () => {
-    const { data, error } = await supabase
-      .from('requests')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching requests:', error);
-      toast({ title: 'Error', description: 'Failed to load requests', variant: 'destructive' });
+  const loadRequests = async () => {
+    const result = await fetchAdminRequests();
+    if (result.error) {
+      if (result.error === 'Not authenticated' || result.error === 'Invalid or expired session') {
+        navigate('/auth');
+        return;
+      }
+      toast({ title: 'Error', description: result.error, variant: 'destructive' });
     } else {
-      setRequests((data || []) as Request[]);
+      setRequests((result.requests || []) as Request[]);
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/auth');
   };
 
   const handleEdit = (request: Request) => {
@@ -100,44 +104,46 @@ const Admin = () => {
   };
 
   const handleSaveEdit = async (id: string) => {
-    const { error } = await supabase
-      .from('requests')
-      .update({
-        name: editForm.name,
-        email: editForm.email,
-        phone: editForm.phone,
-        project_type: editForm.project_type || null,
-        location: editForm.location || null,
-        message: editForm.message || null,
-        meeting_link: editForm.meeting_link || null,
-        appointment_date: editForm.appointment_date || null,
-        appointment_time: editForm.appointment_time || null,
-      })
-      .eq('id', id);
+    const result = await updateAdminRequest(id, {
+      name: editForm.name,
+      email: editForm.email,
+      phone: editForm.phone,
+      project_type: editForm.project_type || null,
+      location: editForm.location || null,
+      message: editForm.message || null,
+      meeting_link: editForm.meeting_link || null,
+      appointment_date: editForm.appointment_date || null,
+      appointment_time: editForm.appointment_time || null,
+    });
 
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    if (result.error) {
+      if (result.error === 'Not authenticated' || result.error === 'Invalid or expired session') {
+        navigate('/auth');
+        return;
+      }
+      toast({ title: 'Error', description: result.error, variant: 'destructive' });
     } else {
       toast({ title: 'Request Updated' });
       setEditingId(null);
       setEditForm({});
-      fetchRequests();
+      loadRequests();
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this request?')) return;
 
-    const { error } = await supabase
-      .from('requests')
-      .delete()
-      .eq('id', id);
+    const result = await deleteAdminRequest(id);
 
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    if (result.error) {
+      if (result.error === 'Not authenticated' || result.error === 'Invalid or expired session') {
+        navigate('/auth');
+        return;
+      }
+      toast({ title: 'Error', description: result.error, variant: 'destructive' });
     } else {
       toast({ title: 'Request Deleted' });
-      fetchRequests();
+      loadRequests();
     }
   };
 
@@ -186,24 +192,8 @@ const Admin = () => {
     );
   }
 
-  if (!isAllowed) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="text-center">
-          <MapPin className="w-12 h-12 text-accent mx-auto mb-4" />
-          <h1 className="font-serif text-3xl text-foreground mb-4">Admin Access Disabled</h1>
-          <p className="text-foreground/60 text-sm mb-8">
-            The admin panel is currently not available.
-          </p>
-          <Link to="/">
-            <Button variant="outline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </div>
-    );
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
@@ -215,9 +205,20 @@ const Admin = () => {
             <MapPin className="w-6 h-6 text-accent" />
             <span className="font-serif text-xl">Pruthvi Admin</span>
           </div>
-          <Link to="/" className="text-background/60 hover:text-accent text-sm font-mono">
-            ← Back to Website
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-background/60 hover:text-accent text-sm font-mono">
+              ← Back to Website
+            </Link>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleLogout}
+              className="border-background/20 text-background hover:bg-background/10"
+            >
+              <LogOut className="w-4 h-4 mr-1" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -434,7 +435,7 @@ const Admin = () => {
                         onClick={() => handleSendWhatsApp(request)}
                         className="bg-green-600 hover:bg-green-700 text-white ml-auto"
                       >
-                        <MessageSquare className="w-4 h-4 mr-1" /> Send WhatsApp
+                        <MessageSquare className="w-4 h-4 mr-1" /> WhatsApp
                       </Button>
                     </div>
                   </div>

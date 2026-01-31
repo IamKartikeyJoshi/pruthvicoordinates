@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
+import { trackRequest } from '@/lib/adminSession';
 import { 
   MapPin, Calendar, Clock, Mail, Phone, User, 
   Video, CheckCircle, FileText, ArrowLeft, Loader2 
@@ -39,24 +39,15 @@ const TrackRequest = () => {
         return;
       }
 
-      try {
-        const { data, error } = await supabase
-          .from('requests')
-          .select('*')
-          .eq('tracking_code', trackingCode)
-          .single();
-
-        if (error || !data) {
-          setNotFound(true);
-        } else {
-          setRequest(data as Request);
-        }
-      } catch (err) {
-        console.error('Error fetching request:', err);
+      const result = await trackRequest(trackingCode);
+      
+      if (result.error || !result.request) {
         setNotFound(true);
-      } finally {
-        setLoading(false);
+      } else {
+        setRequest(result.request as Request);
       }
+      
+      setLoading(false);
     };
 
     fetchRequest();

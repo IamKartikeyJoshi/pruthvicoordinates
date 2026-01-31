@@ -14,18 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_settings: {
+      admin_sessions: {
         Row: {
-          id: number
-          is_admin_allowed: boolean
+          created_at: string
+          expires_at: string
+          id: string
+          session_token: string
         }
         Insert: {
-          id?: number
-          is_admin_allowed?: boolean
+          created_at?: string
+          expires_at: string
+          id?: string
+          session_token: string
         }
         Update: {
-          id?: number
-          is_admin_allowed?: boolean
+          created_at?: string
+          expires_at?: string
+          id?: string
+          session_token?: string
         }
         Relationships: []
       }
