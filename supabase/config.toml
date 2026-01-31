@@ -5,3 +5,18 @@ verify_jwt = false
 
 [functions.send-appointment-email]
 verify_jwt = false
+
+[functions.track-request]
+verify_jwt = false
+
+[functions.admin-login]
+verify_jwt = false
+
+[functions.admin-verify]
+verify_jwt = false
+
+[functions.admin-requests]
+verify_jwt = false
+
+[functions.admin-logout]
+verify_jwt = false
