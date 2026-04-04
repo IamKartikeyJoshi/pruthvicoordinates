@@ -48,6 +48,7 @@ export type Database = {
           name: string
           phone: string
           project_type: string | null
+          status: string
           tracking_code: string
           type: string
         }
@@ -63,6 +64,7 @@ export type Database = {
           name: string
           phone: string
           project_type?: string | null
+          status?: string
           tracking_code: string
           type: string
         }
@@ -78,8 +80,39 @@ export type Database = {
           name?: string
           phone?: string
           project_type?: string | null
+          status?: string
           tracking_code?: string
           type?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          order_index: number
+          page: string
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          order_index?: number
+          page: string
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          order_index?: number
+          page?: string
+          section_key?: string
+          updated_at?: string
         }
         Relationships: []
       }
