@@ -30,7 +30,6 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     )
 
-    // Get session token from header
     const sessionToken = req.headers.get('x-admin-token')
     
     if (!sessionToken) {
@@ -105,7 +104,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    // DELETE a request
+    // DELETE a request (also frees up the time slot)
     if (action === 'delete') {
       const { id } = body
 
@@ -130,6 +129,54 @@ Deno.serve(async (req) => {
 
       return new Response(
         JSON.stringify({ success: true }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // RESCHEDULE (admin - no restrictions)
+    if (action === 'reschedule') {
+      const { id, newDate, newTime } = body
+
+      if (!id || !newDate || !newTime) {
+        return new Response(
+          JSON.stringify({ error: 'id, newDate, and newTime required' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      // Check if slot is available (exclude current request)
+      const { data: existing } = await supabase
+        .from('requests')
+        .select('id')
+        .eq('type', 'appointment')
+        .eq('appointment_date', newDate)
+        .eq('appointment_time', newTime)
+        .neq('status', 'cancelled')
+        .neq('id', id)
+
+      if (existing && existing.length > 0) {
+        return new Response(
+          JSON.stringify({ error: 'Time slot already booked' }),
+          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      const { data, error } = await supabase
+        .from('requests')
+        .update({ appointment_date: newDate, appointment_time: newTime })
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        return new Response(
+          JSON.stringify({ error: 'Failed to reschedule' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      return new Response(
+        JSON.stringify({ request: data }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }

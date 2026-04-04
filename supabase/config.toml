@@ -1,11 +1,5 @@
 project_id = "rfwrsqjanuelmzmttrbe"
 
-[functions.send-contact-email]
-verify_jwt = false
-
-[functions.send-appointment-email]
-verify_jwt = false
-
 [functions.track-request]
 verify_jwt = false
 
@@ -19,4 +13,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.admin-logout]
+verify_jwt = false
+
+[functions.site-content]
+verify_jwt = false
+
+[functions.check-availability]
+verify_jwt = false
+
+[functions.reschedule-request]
 verify_jwt = false

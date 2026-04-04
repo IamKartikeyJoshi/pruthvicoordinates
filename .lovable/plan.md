@@ -1,72 +1,74 @@
-# Backend Security Implementation - COMPLETED
 
-## Summary
-Implemented a secure, minimal session-based admin authentication system with edge functions for all data access.
+# Comprehensive Update Plan
 
----
+## Phase 1: Database Migration
+Create tables and fix security:
 
-## Database Structure
+### New Tables
+- **`site_content`** — Stores dynamic content for Mission, Expertise, Services, Portfolio pages
+  - Fields: `page` (mission/expertise/services/portfolio), `section_key`, `content` (JSONB), `order_index`, `created_at`, `updated_at`
+  - RLS: No public policies (service role only via edge functions for admin CRUD, public read via edge function)
 
-### Table: `requests`
-Stores all public requests (appointments and contacts). RLS allows public INSERT only - no public SELECT, UPDATE, or DELETE.
+### Schema Changes
+- **`requests`** — Add `status` column (text, default 'pending') for appointment lifecycle management
+- Fix RLS: Add explicit `USING (false)` SELECT policy for anon to block public reads
 
-### Table: `admin_sessions`
-Stores admin session tokens with expiration. RLS enabled with no public policies - only accessible via service role.
+### Security Fixes
+- **`admin_sessions`** — Add explicit deny-all policies (no SELECT/INSERT/UPDATE/DELETE for anon)
+- Ensure both tables are locked down
 
----
+## Phase 2: Remove Email Functionality
+- Delete `supabase/functions/send-contact-email/`
+- Delete `supabase/functions/send-appointment-email/`
+- Remove from `supabase/config.toml`
+- Remove any email-related code from frontend
 
-## Edge Functions
+## Phase 3: Edge Functions
+### New Functions
+- **`site-content`** — Public GET (read content by page), Admin POST (CRUD with session auth)
+- **`check-availability`** — Public: check if a date/time slot is already booked
+- **`reschedule-request`** — Public: reschedule own appointment (postpone only, day prior limit, requires tracking code)
+- Update **`admin-requests`** — Add reschedule action (prepone/postpone, no restrictions)
 
-### `track-request` (Public)
-- Accepts: `{ trackingCode: string }`
-- Returns: Single matching request
-- Uses service role to bypass RLS
+## Phase 4: Frontend Updates
 
-### `admin-login`
-- Accepts: `{ passphrase: string }`
-- Validates against `ADMIN_PASSPHRASE` secret
-- Creates session in `admin_sessions` table
-- Returns: `{ sessionToken, expiresAt }`
+### Admin Dashboard
+- Fix logout button styling/functionality
+- Add tabs: Requests | Mission | Expertise | Services | Portfolio
+- Each content tab shows current page content with inline editing (add/edit/delete/reorder sections)
+- GUI-based content management — all sections editable
 
-### `admin-verify`
-- Accepts: `{ sessionToken: string }`
-- Checks if session exists and not expired
-- Returns: `{ valid: boolean }`
+### Appointment Booking
+- Fetch booked slots from `check-availability` edge function
+- Disable already-booked date/time combinations
+- When admin deletes appointment, slot becomes available again
 
-### `admin-requests`
-- Requires: `x-admin-token` header
-- Actions: `list`, `update`, `delete`
-- Uses service role for all operations
+### Rescheduling
+- On TrackRequest page, add "Reschedule" button for appointment requests
+- User can only postpone (pick later date/time), only until day prior
+- Admin can prepone/postpone freely from dashboard
 
-### `admin-logout`
-- Requires: `x-admin-token` header
-- Deletes session from database
+### Tracking Code (What3Words Style)
+- Generate 3-word tracking codes (e.g., "river-mountain-eagle") instead of PRU-XXXXXX
+- After submission, show tracking code prominently with:
+  - Copy button (copies full website URL, not just code)
+  - Track Request button (navigates to /track/code)
 
----
+### Content Pages (Mission, Expertise, Services, Portfolio)
+- Fetch dynamic content from `site-content` edge function
+- If no admin content exists, render existing placeholder/hardcoded content
+- If admin content exists, replace placeholder with dynamic content
 
-## Frontend Implementation
+## Phase 5: Security Resolution
+- Mark resolved security findings after fixes
+- HTML injection finding resolved by removing email functions
+- Rate limiting finding resolved by removing email functions
+- admin_sessions exposure fixed by RLS
+- requests exposure fixed by RLS
 
-### `/auth` Page
-- Passphrase input form
-- Calls `admin-login` edge function
-- Stores session token in localStorage
-- Redirects to `/admin` on success
-
-### `/admin` Page
-- Verifies session on load via `admin-verify`
-- All CRUD operations via `admin-requests` edge function
-- Logout button clears session
-
-### `/track/:trackingCode` Page
-- Calls `track-request` edge function
-- No direct database access
-
----
-
-## Security Features
-
-1. **No public database reads** - All data access via edge functions
-2. **Session-based authentication** - 24-hour expiring tokens
-3. **Service role only** - Edge functions use service role for queries
-4. **RLS enforced** - Public can only INSERT, not SELECT/UPDATE/DELETE
-5. **Passphrase secret** - Stored in Supabase secrets, not in code
+## Implementation Order
+1. Database migration (single migration with all changes)
+2. Delete email edge functions
+3. Create/update edge functions
+4. Update frontend components
+5. Verify and resolve security findings
