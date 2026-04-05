@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
 import { 
   MapPin, Calendar, Mail, Phone, Trash2, Edit, X, Check, Clock, 
-  MessageSquare, Video, Loader2, User, LogOut, GripVertical,
+  MessageSquare, Video, Loader2, User, LogOut,
   Plus, Save, ArrowUp, ArrowDown, FileText, RefreshCw
 } from 'lucide-react';
 import { 
@@ -16,6 +16,7 @@ import {
   deleteAdminRequest, getStoredSession, adminReschedule,
   adminFetchContent, adminBulkSaveContent,
 } from '@/lib/adminSession';
+import { PAGE_DEFAULTS, ContentItem } from '@/lib/defaultContent';
 
 interface Request {
   id: string;
@@ -34,17 +35,32 @@ interface Request {
   status: string;
 }
 
-interface ContentItem {
-  id?: string;
-  section_key: string;
-  content: Record<string, any>;
-  order_index: number;
-}
-
-type AdminTab = 'requests' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type AdminTab = 'requests' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
 
 // Content section schemas for each page
-const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name: string; label: string; type: 'text' | 'textarea' | 'list' }[] }[]> = {
+const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name: string; label: string; type: 'text' | 'textarea' | 'image' }[] }[]> = {
+  home: [
+    { key: 'stat', label: 'Stats (Numbers That Define Us)', fields: [
+      { name: 'value', label: 'Value (e.g. 500+)', type: 'text' },
+      { name: 'label', label: 'Label', type: 'text' },
+      { name: 'description', label: 'Description', type: 'text' },
+    ]},
+    { key: 'client', label: 'Clients (Who We Serve)', fields: [
+      { name: 'name', label: 'Client Type Name', type: 'text' },
+      { name: 'description', label: 'Description', type: 'text' },
+      { name: 'icon', label: 'Icon (Building2/Landmark/Factory/Home/TreePine/Truck)', type: 'text' },
+    ]},
+    { key: 'process', label: 'Process (How We Work)', fields: [
+      { name: 'number', label: 'Step Number', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'icon', label: 'Icon (ClipboardList/Compass/FileCheck/Send)', type: 'text' },
+    ]},
+    { key: 'contact_info', label: 'Contact Info (Phone & Email)', fields: [
+      { name: 'phone', label: 'Phone Number', type: 'text' },
+      { name: 'email', label: 'Email Address', type: 'text' },
+    ]},
+  ],
   mission: [
     { key: 'hero', label: 'Hero Section', fields: [
       { name: 'subtitle', label: 'Subtitle', type: 'text' },
@@ -56,22 +72,23 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'label', label: 'Label', type: 'text' },
       { name: 'value', label: 'Value', type: 'text' },
     ]},
-    { key: 'philosophy', label: 'Philosophy', fields: [
+    { key: 'philosophy', label: 'Our Philosophy', fields: [
       { name: 'title', label: 'Title', type: 'text' },
-      { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'description', label: 'Description (use double newlines for paragraphs)', type: 'textarea' },
       { name: 'quote', label: 'Quote', type: 'textarea' },
       { name: 'quoteName', label: 'Quote Author', type: 'text' },
       { name: 'quoteRole', label: 'Quote Role', type: 'text' },
     ]},
     { key: 'value', label: 'Core Values', fields: [
+      { name: 'number', label: 'Number (01, 02...)', type: 'text' },
       { name: 'title', label: 'Title', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
     ]},
-    { key: 'milestone', label: 'Milestones', fields: [
+    { key: 'milestone', label: 'Our Journey (Milestones)', fields: [
       { name: 'year', label: 'Year', type: 'text' },
       { name: 'event', label: 'Event', type: 'text' },
     ]},
-    { key: 'team', label: 'Team Members', fields: [
+    { key: 'team', label: 'Leadership Team', fields: [
       { name: 'name', label: 'Name', type: 'text' },
       { name: 'role', label: 'Role', type: 'text' },
       { name: 'experience', label: 'Experience', type: 'text' },
@@ -86,23 +103,24 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'titleAccent', label: 'Title Accent', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
     ]},
-    { key: 'equipment', label: 'Equipment', fields: [
+    { key: 'equipment', label: 'Equipment (Our Arsenal)', fields: [
       { name: 'name', label: 'Equipment Name', type: 'text' },
       { name: 'category', label: 'Category', type: 'text' },
       { name: 'accuracy', label: 'Accuracy', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'image_url', label: 'Image URL (optional)', type: 'image' },
     ]},
     { key: 'methodology', label: 'Methodologies', fields: [
       { name: 'title', label: 'Title', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'applications', label: 'Applications (comma-separated)', type: 'text' },
     ]},
-    { key: 'certification', label: 'Certifications', fields: [
+    { key: 'software', label: 'Software Stack', fields: [
+      { name: 'name', label: 'Software Name', type: 'text' },
+    ]},
+    { key: 'certification', label: 'Credentials', fields: [
       { name: 'name', label: 'Certification Name', type: 'text' },
       { name: 'authority', label: 'Authority', type: 'text' },
-    ]},
-    { key: 'software', label: 'Software', fields: [
-      { name: 'name', label: 'Software Name', type: 'text' },
     ]},
   ],
   services: [
@@ -112,7 +130,7 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'titleAccent', label: 'Title Accent', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
     ]},
-    { key: 'service', label: 'Services', fields: [
+    { key: 'service', label: 'Services (Scope of Work)', fields: [
       { name: 'title', label: 'Service Title', type: 'text' },
       { name: 'subtitle', label: 'Subtitle', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
@@ -120,7 +138,8 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'timeline', label: 'Timeline', type: 'text' },
       { name: 'idealFor', label: 'Ideal For', type: 'text' },
     ]},
-    { key: 'process', label: 'Process Steps', fields: [
+    { key: 'process', label: 'How We Work (Process)', fields: [
+      { name: 'step', label: 'Step Number', type: 'text' },
       { name: 'title', label: 'Step Title', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
     ]},
@@ -145,18 +164,19 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'description', label: 'Description', type: 'textarea' },
       { name: 'services', label: 'Services (comma-separated)', type: 'text' },
       { name: 'highlight', label: 'Key Achievement', type: 'text' },
+      { name: 'image_url', label: 'Project Image URL (optional)', type: 'image' },
     ]},
-    { key: 'category', label: 'Project Categories', fields: [
+    { key: 'category', label: 'Industry Experience', fields: [
       { name: 'name', label: 'Category Name', type: 'text' },
       { name: 'count', label: 'Count', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
-      { name: 'projects', label: 'Projects (comma-separated)', type: 'text' },
+      { name: 'projects', label: 'Notable Projects (comma-separated)', type: 'text' },
     ]},
-    { key: 'client', label: 'Clients', fields: [
+    { key: 'client', label: 'Our Clients', fields: [
       { name: 'name', label: 'Client Name', type: 'text' },
       { name: 'type', label: 'Type', type: 'text' },
     ]},
-    { key: 'testimonial', label: 'Testimonials', fields: [
+    { key: 'testimonial', label: 'Client Feedback', fields: [
       { name: 'quote', label: 'Quote', type: 'textarea' },
       { name: 'author', label: 'Author', type: 'text' },
       { name: 'position', label: 'Position', type: 'text' },
@@ -200,6 +220,7 @@ const Admin = () => {
   useEffect(() => {
     if (activeTab !== 'requests' && isAuthenticated) {
       loadContent(activeTab);
+      setSelectedSection('');
     }
   }, [activeTab, isAuthenticated]);
 
@@ -218,10 +239,12 @@ const Admin = () => {
   const loadContent = async (page: string) => {
     setContentLoading(true);
     const result = await adminFetchContent(page);
-    if (result.content) {
+    if (result.content && result.content.length > 0) {
       setContentItems(result.content as ContentItem[]);
     } else {
-      setContentItems([]);
+      // Pre-populate with defaults
+      const defaults = PAGE_DEFAULTS[page] || [];
+      setContentItems(defaults.map(d => ({ ...d })));
     }
     setContentLoading(false);
   };
@@ -333,7 +356,6 @@ const Admin = () => {
 
   const moveContentItem = (index: number, direction: 'up' | 'down') => {
     const items = [...contentItems];
-    const sectionItems = items.filter(i => i.section_key === items[index].section_key);
     const sectionIndices = items.map((item, idx) => item.section_key === items[index].section_key ? idx : -1).filter(i => i !== -1);
     const posInSection = sectionIndices.indexOf(index);
     
@@ -377,6 +399,7 @@ const Admin = () => {
 
   const tabs: { id: AdminTab; label: string }[] = [
     { id: 'requests', label: 'Requests' },
+    { id: 'home', label: 'Home' },
     { id: 'mission', label: 'Mission' },
     { id: 'expertise', label: 'Expertise' },
     { id: 'services', label: 'Services' },
@@ -393,17 +416,9 @@ const Admin = () => {
             <span className="font-serif text-xl">Pruthvi Admin</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-background/60 hover:text-accent text-sm font-mono">
-              ← Back to Website
-            </Link>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={handleLogout}
-              className="text-background hover:text-accent hover:bg-background/10"
-            >
-              <LogOut className="w-4 h-4 mr-1" />
-              Logout
+            <Link to="/" className="text-background/60 hover:text-accent text-sm font-mono">← Back to Website</Link>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-background hover:text-accent hover:bg-background/10">
+              <LogOut className="w-4 h-4 mr-1" /> Logout
             </Button>
           </div>
         </div>
@@ -430,27 +445,21 @@ const Admin = () => {
         {/* Requests Tab */}
         {activeTab === 'requests' && (
           <>
-            {/* Filter Sub-tabs */}
             <div className="flex gap-4 mb-8">
               {(['all', 'appointment', 'contact'] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setFilter(tab)}
                   className={`px-4 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
-                    filter === tab 
-                      ? 'bg-accent/20 text-accent' 
-                      : 'text-foreground/60 hover:text-foreground'
+                    filter === tab ? 'bg-accent/20 text-accent' : 'text-foreground/60 hover:text-foreground'
                   }`}
                 >
                   {tab === 'all' ? 'All' : tab === 'appointment' ? 'Appointments' : 'Contacts'}
-                  <span className="ml-2">
-                    ({tab === 'all' ? requests.length : requests.filter(r => r.type === tab).length})
-                  </span>
+                  <span className="ml-2">({tab === 'all' ? requests.length : requests.filter(r => r.type === tab).length})</span>
                 </button>
               ))}
             </div>
 
-            {/* Requests List */}
             <div className="space-y-4">
               {filteredRequests.length === 0 ? (
                 <div className="text-center py-16 text-foreground/60">
@@ -463,59 +472,28 @@ const Admin = () => {
                     {editingId === request.id ? (
                       <div className="space-y-4">
                         <div className="grid md:grid-cols-3 gap-4">
-                          <div>
-                            <label className="text-xs font-mono text-foreground/60 mb-1 block">Name</label>
-                            <Input value={editForm.name || ''} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
-                          </div>
-                          <div>
-                            <label className="text-xs font-mono text-foreground/60 mb-1 block">Email</label>
-                            <Input type="email" value={editForm.email || ''} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} />
-                          </div>
-                          <div>
-                            <label className="text-xs font-mono text-foreground/60 mb-1 block">Phone</label>
-                            <Input value={editForm.phone || ''} onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })} />
-                          </div>
+                          <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Name</label><Input value={editForm.name || ''} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></div>
+                          <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Email</label><Input type="email" value={editForm.email || ''} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} /></div>
+                          <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Phone</label><Input value={editForm.phone || ''} onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })} /></div>
                           <div>
                             <label className="text-xs font-mono text-foreground/60 mb-1 block">Status</label>
-                            <select
-                              value={editForm.status || 'pending'}
-                              onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
-                              className="w-full h-10 px-3 border border-input bg-background rounded-md text-foreground"
-                            >
+                            <select value={editForm.status || 'pending'} onChange={(e) => setEditForm({ ...editForm, status: e.target.value })} className="w-full h-10 px-3 border border-input bg-background rounded-md text-foreground">
                               <option value="pending">Pending</option>
                               <option value="confirmed">Confirmed</option>
                               <option value="completed">Completed</option>
                               <option value="cancelled">Cancelled</option>
                             </select>
                           </div>
-                          <div>
-                            <label className="text-xs font-mono text-foreground/60 mb-1 block">Project Type</label>
-                            <Input value={editForm.project_type || ''} onChange={(e) => setEditForm({ ...editForm, project_type: e.target.value })} />
-                          </div>
-                          <div>
-                            <label className="text-xs font-mono text-foreground/60 mb-1 block">Location</label>
-                            <Input value={editForm.location || ''} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} />
-                          </div>
+                          <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Project Type</label><Input value={editForm.project_type || ''} onChange={(e) => setEditForm({ ...editForm, project_type: e.target.value })} /></div>
+                          <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Location</label><Input value={editForm.location || ''} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} /></div>
                           {request.type === 'appointment' && (
                             <>
-                              <div>
-                                <label className="text-xs font-mono text-foreground/60 mb-1 block">Date</label>
-                                <Input type="date" value={editForm.appointment_date || ''} onChange={(e) => setEditForm({ ...editForm, appointment_date: e.target.value })} />
-                              </div>
-                              <div>
-                                <label className="text-xs font-mono text-foreground/60 mb-1 block">Time</label>
-                                <Input type="time" value={editForm.appointment_time || ''} onChange={(e) => setEditForm({ ...editForm, appointment_time: e.target.value })} />
-                              </div>
-                              <div className="md:col-span-2">
-                                <label className="text-xs font-mono text-foreground/60 mb-1 block">Meeting Link</label>
-                                <Input value={editForm.meeting_link || ''} onChange={(e) => setEditForm({ ...editForm, meeting_link: e.target.value })} placeholder="https://..." />
-                              </div>
+                              <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Date</label><Input type="date" value={editForm.appointment_date || ''} onChange={(e) => setEditForm({ ...editForm, appointment_date: e.target.value })} /></div>
+                              <div><label className="text-xs font-mono text-foreground/60 mb-1 block">Time</label><Input type="time" value={editForm.appointment_time || ''} onChange={(e) => setEditForm({ ...editForm, appointment_time: e.target.value })} /></div>
+                              <div className="md:col-span-2"><label className="text-xs font-mono text-foreground/60 mb-1 block">Meeting Link</label><Input value={editForm.meeting_link || ''} onChange={(e) => setEditForm({ ...editForm, meeting_link: e.target.value })} placeholder="https://..." /></div>
                             </>
                           )}
-                          <div className="md:col-span-3">
-                            <label className="text-xs font-mono text-foreground/60 mb-1 block">Message</label>
-                            <textarea value={editForm.message || ''} onChange={(e) => setEditForm({ ...editForm, message: e.target.value })} className="w-full h-20 px-3 py-2 border border-input bg-background rounded-md resize-none text-foreground" />
-                          </div>
+                          <div className="md:col-span-3"><label className="text-xs font-mono text-foreground/60 mb-1 block">Message</label><textarea value={editForm.message || ''} onChange={(e) => setEditForm({ ...editForm, message: e.target.value })} className="w-full h-20 px-3 py-2 border border-input bg-background rounded-md resize-none text-foreground" /></div>
                         </div>
                         <div className="flex gap-2 justify-end">
                           <Button variant="outline" size="sm" onClick={() => setEditingId(null)}><X className="w-4 h-4 mr-1" /> Cancel</Button>
@@ -526,9 +504,7 @@ const Admin = () => {
                       <div>
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center gap-3">
-                            <span className={`px-2 py-1 text-xs font-mono uppercase ${
-                              request.type === 'appointment' ? 'bg-accent/20 text-accent' : 'bg-blue-500/20 text-blue-600'
-                            }`}>{request.type}</span>
+                            <span className={`px-2 py-1 text-xs font-mono uppercase ${request.type === 'appointment' ? 'bg-accent/20 text-accent' : 'bg-blue-500/20 text-blue-600'}`}>{request.type}</span>
                             <span className={`px-2 py-1 text-xs font-mono uppercase ${
                               request.status === 'confirmed' ? 'bg-green-500/20 text-green-600' :
                               request.status === 'cancelled' ? 'bg-red-500/20 text-red-600' :
@@ -539,37 +515,27 @@ const Admin = () => {
                           </div>
                           <span className="text-xs text-foreground/40 font-mono">{formatDate(request.created_at)}</span>
                         </div>
-
                         <div className="grid md:grid-cols-3 gap-4 mb-4 text-sm">
                           <div className="flex items-center gap-2"><User className="w-4 h-4 text-foreground/40" /><span>{request.name}</span></div>
                           <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-foreground/40" /><span className="text-foreground/80">{request.email}</span></div>
                           <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-foreground/40" /><span className="text-foreground/80">{request.phone}</span></div>
                         </div>
-
                         {request.project_type && (
-                          <div className="text-sm text-accent mb-2">
-                            <MapPin className="w-4 h-4 inline mr-1" />
-                            {request.project_type}{request.location && ` • ${request.location}`}
-                          </div>
+                          <div className="text-sm text-accent mb-2"><MapPin className="w-4 h-4 inline mr-1" />{request.project_type}{request.location && ` • ${request.location}`}</div>
                         )}
-
                         {request.type === 'appointment' && (request.appointment_date || request.appointment_time) && (
                           <div className="flex gap-4 text-sm text-foreground/70 mb-2">
                             {request.appointment_date && <span className="flex items-center gap-1"><Calendar className="w-4 h-4" />{formatDate(request.appointment_date)}</span>}
                             {request.appointment_time && <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{request.appointment_time}</span>}
                           </div>
                         )}
-
                         {request.type === 'appointment' && request.meeting_link && (
                           <div className="flex items-center gap-2 text-sm text-green-600 mb-2">
                             <Video className="w-4 h-4" />
                             <a href={request.meeting_link} target="_blank" rel="noopener noreferrer" className="hover:underline truncate max-w-xs">{request.meeting_link}</a>
                           </div>
                         )}
-
                         {request.message && <p className="text-sm text-foreground/60 mt-2 italic">"{request.message}"</p>}
-
-                        {/* Reschedule Form */}
                         {rescheduleId === request.id && (
                           <div className="mt-4 p-4 bg-secondary/30 border border-foreground/10">
                             <p className="font-mono text-xs text-foreground/60 mb-3 uppercase">Reschedule (Admin - No Restrictions)</p>
@@ -583,8 +549,6 @@ const Admin = () => {
                             </div>
                           </div>
                         )}
-
-                        {/* Actions */}
                         <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-foreground/10">
                           <Button variant="outline" size="sm" onClick={() => handleEdit(request)}><Edit className="w-4 h-4 mr-1" /> Edit</Button>
                           {request.type === 'appointment' && (
@@ -648,7 +612,9 @@ const Admin = () => {
                       return (
                         <div key={index} className="border border-foreground/10 bg-popover p-6">
                           <div className="flex items-center justify-between mb-4">
-                            <span className="font-mono text-xs text-foreground/60 uppercase">{schema.label} #{contentItems.filter((ci, ci_idx) => ci.section_key === selectedSection && ci_idx <= index).length}</span>
+                            <span className="font-mono text-xs text-foreground/60 uppercase">
+                              {schema.label} #{contentItems.filter((ci, ci_idx) => ci.section_key === selectedSection && ci_idx <= index).length}
+                            </span>
                             <div className="flex gap-1">
                               <Button variant="ghost" size="sm" onClick={() => moveContentItem(index, 'up')}><ArrowUp className="w-4 h-4" /></Button>
                               <Button variant="ghost" size="sm" onClick={() => moveContentItem(index, 'down')}><ArrowDown className="w-4 h-4" /></Button>
@@ -657,7 +623,7 @@ const Admin = () => {
                           </div>
                           <div className="grid md:grid-cols-2 gap-4">
                             {schema.fields.map((field) => (
-                              <div key={field.name} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
+                              <div key={field.name} className={field.type === 'textarea' || field.type === 'image' ? 'md:col-span-2' : ''}>
                                 <label className="text-xs font-mono text-foreground/60 mb-1 block">{field.label}</label>
                                 {field.type === 'textarea' ? (
                                   <textarea
@@ -665,6 +631,17 @@ const Admin = () => {
                                     onChange={(e) => updateContentItem(index, field.name, e.target.value)}
                                     className="w-full h-24 px-3 py-2 border border-input bg-background rounded-md resize-none text-foreground"
                                   />
+                                ) : field.type === 'image' ? (
+                                  <div>
+                                    <Input
+                                      value={item.content[field.name] || ''}
+                                      onChange={(e) => updateContentItem(index, field.name, e.target.value)}
+                                      placeholder="https://example.com/image.jpg"
+                                    />
+                                    {item.content[field.name] && (
+                                      <img src={item.content[field.name]} alt="Preview" className="mt-2 h-24 object-cover rounded border border-foreground/10" />
+                                    )}
+                                  </div>
                                 ) : (
                                   <Input
                                     value={item.content[field.name] || ''}
@@ -692,11 +669,11 @@ const Admin = () => {
                   </Button>
                 </div>
 
-                {contentItems.length === 0 && !selectedSection && (
+                {!selectedSection && (
                   <div className="text-center py-16 text-foreground/60">
                     <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p className="mb-2">No custom content for {activeTab} page</p>
-                    <p className="text-sm">Select a section above and add content. The website will show placeholder content until you add your own.</p>
+                    <p className="mb-2">Select a section above to edit content for the {activeTab} page</p>
+                    <p className="text-sm">All current website content is pre-loaded. Edit, reorder, add or delete items, then click Save & Publish.</p>
                   </div>
                 )}
               </>
