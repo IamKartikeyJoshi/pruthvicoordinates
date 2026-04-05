@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
 import { Linkedin, Instagram, Twitter } from "lucide-react";
 
-const Footer = () => {
+interface Props {
+  contactInfo?: Record<string, any>;
+}
+
+const Footer = ({ contactInfo }: Props) => {
+  const phone = contactInfo?.phone || '+91 98765 43210';
+  const email = contactInfo?.email || 'info@pruthvisurvey.com';
+
   return (
     <footer className="bg-foreground text-background py-16 border-t border-background/10">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-3">
               <div className="w-2.5 h-2.5 bg-accent rounded-full blinker" />
@@ -17,38 +23,20 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h5 className="font-mono text-xs font-bold tracking-widest text-accent mb-6 uppercase">
-              Quick Links
-            </h5>
+            <h5 className="font-mono text-xs font-bold tracking-widest text-accent mb-6 uppercase">Quick Links</h5>
             <ul className="space-y-3 text-sm text-background/60">
-              <li>
-                <Link to="/" className="hover:text-background transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link to="/mission" className="hover:text-background transition-colors">Mission</Link>
-              </li>
-              <li>
-                <Link to="/expertise" className="hover:text-background transition-colors">Expertise</Link>
-              </li>
-              <li>
-                <Link to="/services" className="hover:text-background transition-colors">Services</Link>
-              </li>
-              <li>
-                <Link to="/portfolio" className="hover:text-background transition-colors">Portfolio</Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-background transition-colors">Contact</Link>
-              </li>
+              <li><Link to="/" className="hover:text-background transition-colors">Home</Link></li>
+              <li><Link to="/mission" className="hover:text-background transition-colors">Mission</Link></li>
+              <li><Link to="/expertise" className="hover:text-background transition-colors">Expertise</Link></li>
+              <li><Link to="/services" className="hover:text-background transition-colors">Services</Link></li>
+              <li><Link to="/portfolio" className="hover:text-background transition-colors">Portfolio</Link></li>
+              <li><Link to="/contact" className="hover:text-background transition-colors">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Services */}
           <div>
-            <h5 className="font-mono text-xs font-bold tracking-widest text-accent mb-6 uppercase">
-              Services
-            </h5>
+            <h5 className="font-mono text-xs font-bold tracking-widest text-accent mb-6 uppercase">Services</h5>
             <ul className="space-y-3 text-sm text-background/60">
               <li className="hover:text-background cursor-pointer transition-colors">Topographical Survey</li>
               <li className="hover:text-background cursor-pointer transition-colors">Boundary Demarcation</li>
@@ -58,34 +46,22 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social */}
           <div>
-            <h5 className="font-mono text-xs font-bold tracking-widest text-accent mb-6 uppercase">
-              Connect
-            </h5>
+            <h5 className="font-mono text-xs font-bold tracking-widest text-accent mb-6 uppercase">Connect</h5>
             <div className="flex gap-4 mb-6">
-              <a
-                href="#"
-                className="w-10 h-10 border border-background/20 flex items-center justify-center hover:bg-background hover:text-foreground transition-all"
-              >
+              <a href="#" className="w-10 h-10 border border-background/20 flex items-center justify-center hover:bg-background hover:text-foreground transition-all">
                 <Linkedin className="w-4 h-4" />
               </a>
-              <a
-                href="#"
-                className="w-10 h-10 border border-background/20 flex items-center justify-center hover:bg-background hover:text-foreground transition-all"
-              >
+              <a href="#" className="w-10 h-10 border border-background/20 flex items-center justify-center hover:bg-background hover:text-foreground transition-all">
                 <Instagram className="w-4 h-4" />
               </a>
-              <a
-                href="#"
-                className="w-10 h-10 border border-background/20 flex items-center justify-center hover:bg-background hover:text-foreground transition-all"
-              >
+              <a href="#" className="w-10 h-10 border border-background/20 flex items-center justify-center hover:bg-background hover:text-foreground transition-all">
                 <Twitter className="w-4 h-4" />
               </a>
             </div>
             <div className="text-sm text-background/60">
-              <p>info@pruthvisurvey.com</p>
-              <p>+91 98765 43210</p>
+              <p>{email}</p>
+              <p>{phone}</p>
             </div>
           </div>
         </div>

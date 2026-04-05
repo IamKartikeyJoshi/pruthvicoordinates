@@ -1,15 +1,19 @@
-import { Building2, Landmark, Factory, Home, TreePine, Truck } from "lucide-react";
+import { Building2, Landmark, Factory, Home, TreePine, Truck, LucideIcon } from "lucide-react";
+import { ContentItem, HOME_DEFAULTS } from "@/lib/defaultContent";
 
-const clientTypes = [
-  { icon: Building2, name: "Real Estate Developers", description: "Land acquisition & site planning" },
-  { icon: Landmark, name: "Government Bodies", description: "Infrastructure & municipal projects" },
-  { icon: Factory, name: "Industrial Sector", description: "Factory layouts & compliance" },
-  { icon: Home, name: "Individual Landowners", description: "Boundary disputes & documentation" },
-  { icon: TreePine, name: "Agriculture", description: "Farm mapping & land records" },
-  { icon: Truck, name: "Construction Companies", description: "As-built & progress surveys" },
-];
+const iconMap: Record<string, LucideIcon> = {
+  Building2, Landmark, Factory, Home, TreePine, Truck,
+};
 
-const ClientsSection = () => {
+interface Props {
+  items?: ContentItem[];
+}
+
+const ClientsSection = ({ items }: Props) => {
+  const clients = items && items.length > 0
+    ? items.map(i => i.content)
+    : HOME_DEFAULTS.filter(d => d.section_key === 'client').map(d => d.content);
+
   return (
     <section className="py-20 bg-secondary/30">
       <div className="container mx-auto px-6">
@@ -26,20 +30,23 @@ const ClientsSection = () => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          {clientTypes.map((client, index) => (
-            <div
-              key={index}
-              className="group p-6 border border-foreground/10 hover:border-accent hover:bg-accent/5 transition-all duration-300 text-center"
-            >
-              <client.icon className="w-10 h-10 mx-auto mb-4 text-foreground/60 group-hover:text-accent transition-colors" />
-              <h4 className="font-mono text-xs uppercase tracking-widest text-foreground/80 mb-2">
-                {client.name}
-              </h4>
-              <p className="text-foreground/50 text-xs hidden md:block">
-                {client.description}
-              </p>
-            </div>
-          ))}
+          {clients.map((client, index) => {
+            const IconComponent = iconMap[client.icon] || Building2;
+            return (
+              <div
+                key={index}
+                className="group p-6 border border-foreground/10 hover:border-accent hover:bg-accent/5 transition-all duration-300 text-center"
+              >
+                <IconComponent className="w-10 h-10 mx-auto mb-4 text-foreground/60 group-hover:text-accent transition-colors" />
+                <h4 className="font-mono text-xs uppercase tracking-widest text-foreground/80 mb-2">
+                  {client.name}
+                </h4>
+                <p className="text-foreground/50 text-xs hidden md:block">
+                  {client.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

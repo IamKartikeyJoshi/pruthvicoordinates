@@ -1,11 +1,15 @@
-const stats = [
-  { value: "500+", label: "Projects Completed", description: "Across residential, commercial & infrastructure" },
-  { value: "15+", label: "Years Experience", description: "Professional surveying expertise" },
-  { value: "98%", label: "Client Satisfaction", description: "Precision and reliability guaranteed" },
-  { value: "50+", label: "Corporate Clients", description: "Trusted by leading organizations" },
-];
+import { ContentItem } from "@/lib/defaultContent";
+import { HOME_DEFAULTS } from "@/lib/defaultContent";
 
-const StatsSection = () => {
+interface Props {
+  items?: ContentItem[];
+}
+
+const StatsSection = ({ items }: Props) => {
+  const stats = items && items.length > 0 
+    ? items.map(i => i.content) 
+    : HOME_DEFAULTS.filter(d => d.section_key === 'stat').map(d => d.content);
+
   return (
     <section className="py-20 bg-foreground text-background">
       <div className="container mx-auto px-6">
