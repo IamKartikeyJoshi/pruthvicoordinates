@@ -198,6 +198,7 @@ const Mission = () => {
             </div>
           </div>
         </section>
+      </main>
       <Footer />
     </div>
   );
