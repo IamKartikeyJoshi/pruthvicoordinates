@@ -37,21 +37,21 @@ const Mission = () => {
       <Header />
       <main className="pt-24">
         {/* Hero */}
-        <section className="py-24 bg-foreground text-background relative overflow-hidden">
+        <section className="py-16 md:py-24 bg-foreground text-background relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <img src={surveyFieldwork} alt="Survey fieldwork" className="w-full h-full object-cover" />
           </div>
           <div className="absolute inset-0 bg-foreground/80" />
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 md:px-6 relative z-10">
             <div className="max-w-4xl">
               <h3 className="font-mono text-xs font-bold tracking-widest text-accent mb-4 uppercase">
                 {hero.subtitle || 'Our Mission'}
               </h3>
-              <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-background mb-8">
+              <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-background mb-6 md:mb-8">
                 {hero.title || 'Defined by'} <br />
                 <span className="italic text-background/80">{hero.titleAccent || 'Precision'}</span>
               </h1>
-              <p className="font-sans text-xl md:text-2xl text-background/70 max-w-2xl leading-relaxed">
+              <p className="font-sans text-lg md:text-2xl text-background/70 max-w-2xl leading-relaxed">
                 {hero.description || ''}
               </p>
             </div>
@@ -74,32 +74,32 @@ const Mission = () => {
         </section>
 
         {/* Philosophy */}
-        <section className="py-24 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <section className="py-16 md:py-24 bg-background">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
               <div>
                 <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">Our Philosophy</h3>
-                <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground mb-8">
+                <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-foreground mb-6 md:mb-8">
                   {philosophy.title ? philosophy.title.split(' ').slice(0, -1).join(' ') : 'The Art of'} <br />
                   <span className="italic text-accent">{philosophy.title ? philosophy.title.split(' ').slice(-1)[0] : 'Measurement'}</span>
                 </h2>
-                <div className="space-y-6 text-foreground/70 text-lg leading-relaxed">
+                <div className="space-y-4 md:space-y-6 text-foreground/70 text-base md:text-lg leading-relaxed">
                   {(philosophy.description || '').split('\n\n').map((p: string, i: number) => (
                     <p key={i}>{p}</p>
                   ))}
                 </div>
               </div>
-              <div className="bg-popover p-8 border border-foreground/10">
-                <blockquote className="font-serif text-2xl md:text-3xl text-foreground italic leading-relaxed mb-6">
+              <div className="bg-popover p-6 md:p-8 border border-foreground/10">
+                <blockquote className="font-serif text-xl md:text-3xl text-foreground italic leading-relaxed mb-6">
                   "{philosophy.quote || ''}"
                 </blockquote>
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-foreground/10 rounded-full flex items-center justify-center font-serif text-2xl text-accent">
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-foreground/10 rounded-full flex items-center justify-center font-serif text-xl md:text-2xl text-accent">
                     {(philosophy.quoteName || 'RP').split(' ').map((n: string) => n[0]).join('')}
                   </div>
                   <div>
-                    <div className="font-bold text-foreground">{philosophy.quoteName || ''}</div>
-                    <div className="font-mono text-xs text-foreground/50">{philosophy.quoteRole || ''}</div>
+                    <div className="font-bold text-foreground text-sm md:text-base">{philosophy.quoteName || ''}</div>
+                    <div className="font-mono text-[10px] md:text-xs text-foreground/50">{philosophy.quoteRole || ''}</div>
                   </div>
                 </div>
               </div>
