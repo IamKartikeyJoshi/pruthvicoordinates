@@ -1,9 +1,16 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { ArrowRight, Award, Target, Users, Clock, Shield, Compass, Loader2 } from "lucide-react";
+import { ArrowRight, Award, Target, Users, Clock, Shield, Compass, Loader2, MapPin, Star, Zap, icons } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import surveyFieldwork from "@/assets/survey-fieldwork.jpg";
+
+const DynamicIcon = ({ name, ...props }: { name?: string; className?: string }) => {
+  if (!name) return <Target {...props} />;
+  const IconComp = (icons as any)[name];
+  if (IconComp) return <IconComp {...props} />;
+  return <Target {...props} />;
+};
 
 const Mission = () => {
   const { getItems, getFirst, loading } = useSiteContent('mission');
@@ -52,13 +59,14 @@ const Mission = () => {
         </section>
 
         {/* Stats */}
-        <section className="py-16 bg-background border-b border-foreground/10">
-          <div className="container mx-auto px-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <section className="py-12 md:py-16 bg-background border-b border-foreground/10">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, i) => (
                 <div key={i} className="text-center">
-                  <div className="font-serif text-4xl md:text-5xl text-foreground mb-2">{stat.value}</div>
-                  <div className="font-mono text-xs tracking-widest text-foreground/50 uppercase">{stat.label}</div>
+                  <DynamicIcon name={stat.icon} className="w-6 h-6 md:w-8 md:h-8 text-accent mx-auto mb-3" />
+                  <div className="font-serif text-3xl md:text-5xl text-foreground mb-2">{stat.value}</div>
+                  <div className="font-mono text-[10px] md:text-xs tracking-widest text-foreground/50 uppercase">{stat.label}</div>
                 </div>
               ))}
             </div>
