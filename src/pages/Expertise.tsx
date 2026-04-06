@@ -7,6 +7,7 @@ import surveyTotalstation from "@/assets/survey-totalstation.jpg";
 import surveyDgps from "@/assets/survey-dgps.jpg";
 import surveyDrone from "@/assets/survey-drone.jpg";
 import surveyLevel from "@/assets/survey-level.jpg";
+import expertiseHero from "@/assets/expertise-hero.jpg";
 
 const defaultImages = [surveyTotalstation, surveyDgps, surveyDrone, surveyLevel];
 
@@ -33,7 +34,15 @@ const Expertise = () => {
       <main className="pt-24">
         {/* Hero */}
         <section className="py-24 bg-secondary/30 relative overflow-hidden">
-          <div className="absolute inset-0 opacity-30"><div className="grid-pattern h-full" /></div>
+          <div className="absolute inset-0">
+            <img 
+              src={hero.hero_image || expertiseHero} 
+              alt="Expertise hero" 
+              className="w-full h-full object-cover"
+              width={1920} height={1080}
+            />
+            <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
+          </div>
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl">
               <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">{hero.subtitle || 'Technical Expertise'}</h3>

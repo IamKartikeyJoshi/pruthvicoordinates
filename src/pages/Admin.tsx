@@ -114,6 +114,7 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'title', label: 'Title', type: 'text' },
       { name: 'titleAccent', label: 'Title Accent', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'hero_image', label: 'Hero Image URL', type: 'image' },
     ]},
     { key: 'equipment', label: 'Equipment (Our Arsenal)', fields: [
       { name: 'name', label: 'Equipment Name', type: 'text' },
@@ -166,6 +167,7 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'title', label: 'Title', type: 'text' },
       { name: 'titleAccent', label: 'Title Accent', type: 'text' },
       { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'hero_image', label: 'Hero Image URL', type: 'image' },
     ]},
     { key: 'project', label: 'Featured Projects', fields: [
       { name: 'title', label: 'Project Title', type: 'text' },
