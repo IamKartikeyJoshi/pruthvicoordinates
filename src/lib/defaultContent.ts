@@ -10,6 +10,8 @@ export interface ContentItem {
 
 // ============ HOME PAGE ============
 export const HOME_DEFAULTS: ContentItem[] = [
+  // Hero
+  { section_key: 'hero', order_index: -1, content: { badge: 'Govt. Approved Surveyors', title1: 'Mapping', title2: 'Reality', subtitle: 'with absolute precision.', description: 'We translate the physical world into precise digital data. From boundary disputes to massive infrastructure projects, our coordinates define your reality.', cta1_text: 'EXPLORE SERVICES', cta1_link: '/services', cta2_text: 'VIEW PORTFOLIO', cta2_link: '/portfolio' } },
   // Stats
   { section_key: 'stat', order_index: 0, content: { value: '500+', label: 'Projects Completed', description: 'Across residential, commercial & infrastructure' } },
   { section_key: 'stat', order_index: 1, content: { value: '15+', label: 'Years Experience', description: 'Professional surveying expertise' } },
@@ -36,10 +38,10 @@ export const MISSION_DEFAULTS: ContentItem[] = [
   // Hero
   { section_key: 'hero', order_index: 0, content: { subtitle: 'Our Mission', title: 'Defined by', titleAccent: 'Precision', description: 'For over three decades, Pruthvi Co-ordinates has been the trusted name in land surveying across Gujarat. We translate the physical world into precise digital coordinates that define property rights, enable construction, and resolve disputes.' } },
   // Stats
-  { section_key: 'stats', order_index: 1, content: { label: 'PROJECTS COMPLETED', value: '1,500+' } },
-  { section_key: 'stats', order_index: 2, content: { label: 'YEARS EXPERIENCE', value: '34' } },
-  { section_key: 'stats', order_index: 3, content: { label: 'CLIENT SATISFACTION', value: '100%' } },
-  { section_key: 'stats', order_index: 4, content: { label: 'TEAM MEMBERS', value: '45+' } },
+  { section_key: 'stats', order_index: 1, content: { label: 'PROJECTS COMPLETED', value: '1,500+', icon: 'Target' } },
+  { section_key: 'stats', order_index: 2, content: { label: 'YEARS EXPERIENCE', value: '34', icon: 'Clock' } },
+  { section_key: 'stats', order_index: 3, content: { label: 'CLIENT SATISFACTION', value: '100%', icon: 'Award' } },
+  { section_key: 'stats', order_index: 4, content: { label: 'TEAM MEMBERS', value: '45+', icon: 'Users' } },
   // Philosophy
   { section_key: 'philosophy', order_index: 5, content: { title: 'The Art of Measurement', description: 'In our line of work, an inch is a mile. The difference between accurate and approximate can mean the difference between a successful development and a legal nightmare, between harmonious neighbors and bitter disputes.\n\nWe approach every project—whether a simple residential boundary or a complex infrastructure corridor—with the same unwavering commitment to precision. Our data does not merely describe the land; it defines it legally, practically, and permanently.\n\nThis philosophy has earned us the trust of government bodies, real estate developers, legal professionals, and thousands of individual property owners across Gujarat.', quote: 'We do not just measure land; we define boundaries that stand the test of time.', quoteName: 'Rajesh Patel', quoteRole: 'Founder & Principal Surveyor' } },
   // Values

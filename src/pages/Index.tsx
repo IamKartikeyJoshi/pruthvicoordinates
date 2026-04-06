@@ -14,7 +14,7 @@ const Index = () => {
     <div className="min-h-screen bg-background overflow-x-hidden page-bg">
       <Header />
       <main>
-        <HeroSection />
+        <HeroSection heroData={getFirst('hero')} />
         <StatsSection items={getItems('stat')} />
         <ClientsSection items={getItems('client')} />
         <ProcessSection items={getItems('process')} />
