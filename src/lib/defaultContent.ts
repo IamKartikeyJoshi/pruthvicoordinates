@@ -65,7 +65,7 @@ export const MISSION_DEFAULTS: ContentItem[] = [
 
 // ============ EXPERTISE PAGE ============
 export const EXPERTISE_DEFAULTS: ContentItem[] = [
-  { section_key: 'hero', order_index: 0, content: { subtitle: 'Technical Expertise', title: 'Instruments of', titleAccent: 'Truth', description: 'Our commitment to accuracy is backed by state-of-the-art equipment, proven methodologies, and continuous professional development. When precision matters, we deliver.' } },
+  { section_key: 'hero', order_index: 0, content: { subtitle: 'Technical Expertise', title: 'Instruments of', titleAccent: 'Truth', description: 'Our commitment to accuracy is backed by state-of-the-art equipment, proven methodologies, and continuous professional development. When precision matters, we deliver.', hero_image: '' } },
   // Equipment
   { section_key: 'equipment', order_index: 1, content: { name: 'Leica TS16 Total Station', category: 'Precision Measurement', accuracy: '1″ Angular, 1mm + 1.5ppm Distance', description: 'Our flagship total stations deliver sub-millimeter precision for boundary surveys, construction layout, and monitoring applications.', image_url: '' } },
   { section_key: 'equipment', order_index: 2, content: { name: 'Trimble R12i GNSS Receiver', category: 'Satellite Positioning', accuracy: '8mm Horizontal, 15mm Vertical', description: 'RTK-enabled GNSS receivers provide real-time positioning across vast areas, essential for DGPS control surveys and geodetic networks.', image_url: '' } },
@@ -118,7 +118,7 @@ export const SERVICES_DEFAULTS: ContentItem[] = [
 
 // ============ PORTFOLIO PAGE ============
 export const PORTFOLIO_DEFAULTS: ContentItem[] = [
-  { section_key: 'hero', order_index: 0, content: { subtitle: 'Selected Works', title: 'Mapping the', titleAccent: 'Infrastructure', description: 'From iconic landmarks to essential infrastructure, our surveys have shaped Gujarat development story. Explore our portfolio of precision work.' } },
+  { section_key: 'hero', order_index: 0, content: { subtitle: 'Selected Works', title: 'Mapping the', titleAccent: 'Infrastructure', description: 'From iconic landmarks to essential infrastructure, our surveys have shaped Gujarat development story. Explore our portfolio of precision work.', hero_image: '' } },
   // Projects
   { section_key: 'project', order_index: 1, content: { title: 'Sabarmati Riverfront Development', category: 'Infrastructure', location: 'Ahmedabad, Gujarat', year: '2018-2022', area: '11.5 km corridor', description: 'Comprehensive topographical and control survey for the iconic Sabarmati Riverfront Development project.', services: 'DGPS Control Network,Topographical Survey,As-Built Documentation,Progress Monitoring', highlight: 'Zero-deviation from design specifications throughout 4-year project', image_url: '' } },
   { section_key: 'project', order_index: 2, content: { title: 'GIFT City Master Plan Survey', category: 'Urban Development', location: 'Gandhinagar, Gujarat', year: '2019-2021', area: '886 acres', description: 'Complete cadastral and topographical survey for Gujarat International Finance Tec-City (GIFT City).', services: 'Cadastral Survey,Plot Demarcation,Control Network,GIS Database', highlight: 'Served as official survey record for all land transactions in GIFT City', image_url: '' } },
