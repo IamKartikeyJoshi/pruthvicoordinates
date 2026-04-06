@@ -40,6 +40,17 @@ type AdminTab = 'requests' | 'home' | 'mission' | 'expertise' | 'services' | 'po
 // Content section schemas for each page
 const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name: string; label: string; type: 'text' | 'textarea' | 'image' }[] }[]> = {
   home: [
+    { key: 'hero', label: 'Hero Section', fields: [
+      { name: 'badge', label: 'Badge Text', type: 'text' },
+      { name: 'title1', label: 'Title Line 1', type: 'text' },
+      { name: 'title2', label: 'Title Line 2 (italic)', type: 'text' },
+      { name: 'subtitle', label: 'Subtitle', type: 'text' },
+      { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'cta1_text', label: 'Button 1 Text', type: 'text' },
+      { name: 'cta1_link', label: 'Button 1 Link', type: 'text' },
+      { name: 'cta2_text', label: 'Button 2 Text', type: 'text' },
+      { name: 'cta2_link', label: 'Button 2 Link', type: 'text' },
+    ]},
     { key: 'stat', label: 'Stats (Numbers That Define Us)', fields: [
       { name: 'value', label: 'Value (e.g. 500+)', type: 'text' },
       { name: 'label', label: 'Label', type: 'text' },
@@ -71,6 +82,7 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
     { key: 'stats', label: 'Stats', fields: [
       { name: 'label', label: 'Label', type: 'text' },
       { name: 'value', label: 'Value', type: 'text' },
+      { name: 'icon', label: 'Icon (Target/Clock/Award/Users/Shield/Compass/MapPin)', type: 'text' },
     ]},
     { key: 'philosophy', label: 'Our Philosophy', fields: [
       { name: 'title', label: 'Title', type: 'text' },
