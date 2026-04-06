@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Calendar, Ruler, Award, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import portfolioHero from "@/assets/portfolio-hero.jpg";
 import surveyInfrastructure from "@/assets/survey-infrastructure.jpg";
 import surveyDrone from "@/assets/survey-drone.jpg";
 import surveyFieldwork from "@/assets/survey-fieldwork.jpg";
@@ -36,8 +37,16 @@ const Portfolio = () => {
       <Header />
       <main className="pt-24">
         {/* Hero */}
-        <section className="py-24 bg-foreground text-background relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5"><div className="grid-pattern h-full" /></div>
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute inset-0">
+            <img 
+              src={hero.hero_image || portfolioHero} 
+              alt="Portfolio hero" 
+              className="w-full h-full object-cover"
+              width={1920} height={1080}
+            />
+            <div className="absolute inset-0 bg-foreground/80" />
+          </div>
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl">
               <h3 className="font-mono text-xs font-bold tracking-widest text-accent mb-4 uppercase">{hero.subtitle || 'Selected Works'}</h3>
