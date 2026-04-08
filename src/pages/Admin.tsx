@@ -225,7 +225,7 @@ const Admin = () => {
   const [contentLoading, setContentLoading] = useState(false);
   const [contentSaving, setContentSaving] = useState(false);
   const [selectedSection, setSelectedSection] = useState<string>('');
-
+  const [dashboardTab, setDashboardTab] = useState<DashboardSubTab>('expenses');
   useEffect(() => {
     const checkAuth = async () => {
       const session = getStoredSession();
