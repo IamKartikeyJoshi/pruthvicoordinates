@@ -239,7 +239,7 @@ const Admin = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (activeTab !== 'requests' && isAuthenticated) {
+    if (activeTab !== 'requests' && activeTab !== 'dashboard' && isAuthenticated) {
       loadContent(activeTab);
       setSelectedSection('');
     }
