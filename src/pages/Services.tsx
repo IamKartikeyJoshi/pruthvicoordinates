@@ -104,7 +104,7 @@ const Services = () => {
               <h3 className="font-mono text-xs font-bold tracking-widest text-accent mb-4 uppercase">How We Work</h3>
               <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-background">Our <span className="italic text-background/80">Process</span></h2>
             </div>
-            <div className="grid md:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
               {process.map((item, index) => (
                 <div key={index} className="relative">
                   <div className="font-mono text-6xl text-background/10 font-bold mb-4">{item.step || String(index + 1).padStart(2, '0')}</div>

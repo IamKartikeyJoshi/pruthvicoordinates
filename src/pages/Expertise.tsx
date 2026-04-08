@@ -63,7 +63,7 @@ const Expertise = () => {
                 Survey-Grade <br /><span className="italic text-accent">Equipment</span>
               </h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid sm:grid-cols-2 gap-8">
               {equipment.map((item, i) => (
                 <div key={i} className="bg-popover border border-foreground/10 hover:border-accent transition-all duration-300 group overflow-hidden">
                   <div className="aspect-video relative overflow-hidden">
@@ -149,7 +149,7 @@ const Expertise = () => {
               </div>
               <div className="bg-popover p-8 border border-foreground/10">
                 <div className="font-mono text-xs text-foreground/40 mb-6 tracking-widest uppercase">Software Proficiency</div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-4">
                   {software.map((sw, i) => (
                     <div key={i} className="flex items-center gap-3 py-2 border-b border-foreground/5">
                       <span className="w-2 h-2 bg-accent rounded-full" />
@@ -169,7 +169,7 @@ const Expertise = () => {
               <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">Credentials</h3>
               <h2 className="font-serif text-4xl md:text-5xl text-foreground">Licensed & <span className="italic text-accent">Certified</span></h2>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {certifications.map((cert, i) => (
                 <div key={i} className="text-center p-8 border border-foreground/10 hover:border-accent transition-colors group">
                   <Award className="w-12 h-12 text-accent mx-auto mb-4 group-hover:scale-110 transition-transform" />

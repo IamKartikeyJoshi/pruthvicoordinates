@@ -127,7 +127,7 @@ const Portfolio = () => {
               <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">By Sector</h3>
               <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground">Industry <span className="italic text-accent">Experience</span></h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid sm:grid-cols-2 gap-8">
               {categories.map((cat, i) => {
                 const projectList = typeof cat.projects === 'string'
                   ? cat.projects.split(',').map((p: string) => p.trim())
@@ -161,7 +161,7 @@ const Portfolio = () => {
               <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">Trusted By</h3>
               <h2 className="font-serif text-4xl md:text-5xl text-foreground">Our <span className="italic text-accent">Clients</span></h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
               {clients.map((client, i) => (
                 <div key={i} className="text-center p-6 border border-foreground/10 hover:border-accent transition-colors group">
                   <div className="w-16 h-16 bg-foreground/5 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/10 transition-colors">
@@ -184,7 +184,7 @@ const Portfolio = () => {
               <h3 className="font-mono text-xs font-bold tracking-widest text-accent mb-4 uppercase">Client Feedback</h3>
               <h2 className="font-serif text-4xl md:text-5xl text-background">Words of <span className="italic text-background/80">Trust</span></h2>
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
               {testimonials.map((t, i) => (
                 <div key={i} className="border border-background/20 p-8">
                   <div className="font-serif text-6xl text-accent/30 mb-4">"</div>
