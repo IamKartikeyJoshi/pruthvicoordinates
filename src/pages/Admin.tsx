@@ -595,8 +595,42 @@ const Admin = () => {
           </>
         )}
 
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <div>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {([
+                { id: 'expenses', label: 'Expenses' },
+                { id: 'checklist', label: 'Checklist' },
+                { id: 'todos', label: 'To-Do' },
+                { id: 'notes', label: 'Notes' },
+                { id: 'calendar', label: 'Calendar' },
+              ] as { id: DashboardSubTab; label: string }[]).map(sub => (
+                <button
+                  key={sub.id}
+                  onClick={() => setDashboardTab(sub.id)}
+                  className={`px-4 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+                    dashboardTab === sub.id
+                      ? 'bg-accent text-background'
+                      : 'bg-foreground/5 text-foreground/60 hover:text-foreground'
+                  }`}
+                >
+                  {sub.label}
+                </button>
+              ))}
+            </div>
+            <Suspense fallback={<div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin text-accent mx-auto" /></div>}>
+              {dashboardTab === 'expenses' && <ExpensesTab />}
+              {dashboardTab === 'checklist' && <ChecklistTab />}
+              {dashboardTab === 'todos' && <TodoKanbanTab />}
+              {dashboardTab === 'notes' && <NotesTab />}
+              {dashboardTab === 'calendar' && <CalendarTab />}
+            </Suspense>
+          </div>
+        )}
+
         {/* Content Management Tabs */}
-        {activeTab !== 'requests' && (
+        {activeTab !== 'requests' && activeTab !== 'dashboard' && (
           <div>
             {contentLoading ? (
               <div className="text-center py-16">
