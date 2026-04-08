@@ -6,8 +6,7 @@ import { toast } from '@/hooks/use-toast';
 import { 
   MapPin, Calendar, Mail, Phone, Trash2, Edit, X, Check, Clock, 
   MessageSquare, Video, Loader2, User, LogOut,
-  Plus, Save, ArrowUp, ArrowDown, FileText, RefreshCw,
-  LayoutDashboard
+  Plus, Save, ArrowUp, ArrowDown, FileText, RefreshCw
 } from 'lucide-react';
 
 const ExpensesTab = lazy(() => import('@/components/admin/ExpensesTab'));
