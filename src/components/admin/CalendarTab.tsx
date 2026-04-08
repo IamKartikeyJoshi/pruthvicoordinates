@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { dashboardApi } from '@/lib/adminDashboard';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Trash2, Loader2, ChevronLeft, ChevronRight, X, Check, CalendarDays } from 'lucide-react';
+import { Plus, Trash2, Loader2, ChevronLeft, ChevronRight, X, Check } from 'lucide-react';
 
 interface CalendarEvent {
   id: string;
@@ -78,7 +78,6 @@ export default function CalendarTab() {
 
   if (loading) return <div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin text-accent mx-auto" /></div>;
 
-  const selectedDateStr = selectedDate;
   const selectedEvents = selectedDate ? items.filter(e => e.start_date.startsWith(selectedDate)) : [];
 
   return (

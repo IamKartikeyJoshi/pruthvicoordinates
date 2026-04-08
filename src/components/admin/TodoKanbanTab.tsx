@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { dashboardApi } from '@/lib/adminDashboard';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Trash2, Loader2, GripVertical, X, Check, Edit, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Plus, Trash2, Loader2, X, Edit, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface Todo {
   id: string;
