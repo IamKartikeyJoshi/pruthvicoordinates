@@ -61,7 +61,7 @@ const Mission = () => {
         {/* Stats */}
         <section className="py-12 md:py-16 bg-background border-b border-foreground/10">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8">
               {stats.map((stat, i) => (
                 <div key={i} className="text-center">
                   <DynamicIcon name={stat.icon} className="w-6 h-6 md:w-8 md:h-8 text-accent mx-auto mb-3" />
@@ -116,7 +116,7 @@ const Mission = () => {
                 What We <br /><span className="italic text-accent">Stand For</span>
               </h2>
             </div>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {values.map((value, i) => (
                 <div key={i} className="bg-popover p-6 md:p-8 border-l-4 border-accent hover:shadow-xl transition-all duration-500">
                   <div className="flex items-center gap-4 mb-4 md:mb-6">
@@ -163,7 +163,7 @@ const Mission = () => {
                 The Experts <br /><span className="italic text-background/80">Behind the Data</span>
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               {team.map((member, i) => (
                 <div key={i} className="border border-background/20 p-5 md:p-6 hover:border-accent transition-colors group">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-background/10 rounded-full flex items-center justify-center font-serif text-xl md:text-2xl text-accent mb-4 md:mb-6 group-hover:bg-accent/20 transition-colors">

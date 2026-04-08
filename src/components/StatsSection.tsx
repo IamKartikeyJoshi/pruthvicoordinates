@@ -22,7 +22,7 @@ const StatsSection = ({ items }: Props) => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
               <div className="font-serif text-4xl md:text-6xl text-accent mb-2">

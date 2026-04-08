@@ -29,7 +29,7 @@ const ProcessSection = ({ items }: Props) => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {steps.map((step, index) => {
             const IconComponent = iconMap[step.icon] || ClipboardList;
             return (

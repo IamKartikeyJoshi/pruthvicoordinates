@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,12 @@ import {
   MessageSquare, Video, Loader2, User, LogOut,
   Plus, Save, ArrowUp, ArrowDown, FileText, RefreshCw
 } from 'lucide-react';
+
+const ExpensesTab = lazy(() => import('@/components/admin/ExpensesTab'));
+const ChecklistTab = lazy(() => import('@/components/admin/ChecklistTab'));
+const TodoKanbanTab = lazy(() => import('@/components/admin/TodoKanbanTab'));
+const NotesTab = lazy(() => import('@/components/admin/NotesTab'));
+const CalendarTab = lazy(() => import('@/components/admin/CalendarTab'));
 import { 
   generateAppointmentWhatsAppMessage, generateContactWhatsAppMessage, createWhatsAppLink 
 } from '@/lib/whatsappTemplates';
@@ -35,7 +41,8 @@ interface Request {
   status: string;
 }
 
-type AdminTab = 'requests' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type AdminTab = 'requests' | 'dashboard' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type DashboardSubTab = 'expenses' | 'checklist' | 'todos' | 'notes' | 'calendar';
 
 // Content section schemas for each page
 const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name: string; label: string; type: 'text' | 'textarea' | 'image' }[] }[]> = {
@@ -217,7 +224,7 @@ const Admin = () => {
   const [contentLoading, setContentLoading] = useState(false);
   const [contentSaving, setContentSaving] = useState(false);
   const [selectedSection, setSelectedSection] = useState<string>('');
-
+  const [dashboardTab, setDashboardTab] = useState<DashboardSubTab>('expenses');
   useEffect(() => {
     const checkAuth = async () => {
       const session = getStoredSession();
@@ -232,7 +239,7 @@ const Admin = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (activeTab !== 'requests' && isAuthenticated) {
+    if (activeTab !== 'requests' && activeTab !== 'dashboard' && isAuthenticated) {
       loadContent(activeTab);
       setSelectedSection('');
     }
@@ -413,6 +420,7 @@ const Admin = () => {
 
   const tabs: { id: AdminTab; label: string }[] = [
     { id: 'requests', label: 'Requests' },
+    { id: 'dashboard', label: 'Dashboard' },
     { id: 'home', label: 'Home' },
     { id: 'mission', label: 'Mission' },
     { id: 'expertise', label: 'Expertise' },
@@ -586,8 +594,42 @@ const Admin = () => {
           </>
         )}
 
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && (
+          <div>
+            <div className="flex flex-wrap gap-2 mb-6">
+              {([
+                { id: 'expenses', label: 'Expenses' },
+                { id: 'checklist', label: 'Checklist' },
+                { id: 'todos', label: 'To-Do' },
+                { id: 'notes', label: 'Notes' },
+                { id: 'calendar', label: 'Calendar' },
+              ] as { id: DashboardSubTab; label: string }[]).map(sub => (
+                <button
+                  key={sub.id}
+                  onClick={() => setDashboardTab(sub.id)}
+                  className={`px-4 py-2 font-mono text-xs uppercase tracking-widest transition-colors ${
+                    dashboardTab === sub.id
+                      ? 'bg-accent text-background'
+                      : 'bg-foreground/5 text-foreground/60 hover:text-foreground'
+                  }`}
+                >
+                  {sub.label}
+                </button>
+              ))}
+            </div>
+            <Suspense fallback={<div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin text-accent mx-auto" /></div>}>
+              {dashboardTab === 'expenses' && <ExpensesTab />}
+              {dashboardTab === 'checklist' && <ChecklistTab />}
+              {dashboardTab === 'todos' && <TodoKanbanTab />}
+              {dashboardTab === 'notes' && <NotesTab />}
+              {dashboardTab === 'calendar' && <CalendarTab />}
+            </Suspense>
+          </div>
+        )}
+
         {/* Content Management Tabs */}
-        {activeTab !== 'requests' && (
+        {activeTab !== 'requests' && activeTab !== 'dashboard' && (
           <div>
             {contentLoading ? (
               <div className="text-center py-16">
