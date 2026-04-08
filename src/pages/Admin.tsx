@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,8 +6,15 @@ import { toast } from '@/hooks/use-toast';
 import { 
   MapPin, Calendar, Mail, Phone, Trash2, Edit, X, Check, Clock, 
   MessageSquare, Video, Loader2, User, LogOut,
-  Plus, Save, ArrowUp, ArrowDown, FileText, RefreshCw
+  Plus, Save, ArrowUp, ArrowDown, FileText, RefreshCw,
+  LayoutDashboard
 } from 'lucide-react';
+
+const ExpensesTab = lazy(() => import('@/components/admin/ExpensesTab'));
+const ChecklistTab = lazy(() => import('@/components/admin/ChecklistTab'));
+const TodoKanbanTab = lazy(() => import('@/components/admin/TodoKanbanTab'));
+const NotesTab = lazy(() => import('@/components/admin/NotesTab'));
+const CalendarTab = lazy(() => import('@/components/admin/CalendarTab'));
 import { 
   generateAppointmentWhatsAppMessage, generateContactWhatsAppMessage, createWhatsAppLink 
 } from '@/lib/whatsappTemplates';
@@ -35,7 +42,8 @@ interface Request {
   status: string;
 }
 
-type AdminTab = 'requests' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type AdminTab = 'requests' | 'dashboard' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type DashboardSubTab = 'expenses' | 'checklist' | 'todos' | 'notes' | 'calendar';
 
 // Content section schemas for each page
 const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name: string; label: string; type: 'text' | 'textarea' | 'image' }[] }[]> = {
