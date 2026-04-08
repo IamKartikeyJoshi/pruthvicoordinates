@@ -421,6 +421,7 @@ const Admin = () => {
 
   const tabs: { id: AdminTab; label: string }[] = [
     { id: 'requests', label: 'Requests' },
+    { id: 'dashboard', label: 'Dashboard' },
     { id: 'home', label: 'Home' },
     { id: 'mission', label: 'Mission' },
     { id: 'expertise', label: 'Expertise' },
