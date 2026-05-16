@@ -4,6 +4,11 @@ import { Input } from '@/components/ui/input';
 import { dashboardApi } from '@/lib/adminDashboard';
 import { toast } from '@/hooks/use-toast';
 import { Plus, Trash2, Loader2, X, Edit, ChevronRight, ChevronLeft } from 'lucide-react';
+import {
+  DndContext, DragOverlay, PointerSensor, useSensor, useSensors,
+  closestCorners, useDroppable, DragStartEvent, DragEndEvent
+} from '@dnd-kit/core';
+import { useDraggable } from '@dnd-kit/core';
 
 interface Todo {
   id: string;
@@ -34,6 +39,8 @@ export default function TodoKanbanTab() {
   const [adding, setAdding] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ title: '', description: '', priority: 'medium', due_date: '' });
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const load = async () => {
     setLoading(true);
@@ -66,17 +73,36 @@ export default function TodoKanbanTab() {
     if (res.success) setItems(items.filter(i => i.id !== id));
   };
 
+  const handleDragStart = (e: DragStartEvent) => setActiveId(String(e.active.id));
+  const handleDragEnd = (e: DragEndEvent) => {
+    setActiveId(null);
+    const overId = e.over?.id ? String(e.over.id) : null;
+    if (!overId) return;
+    const item = items.find(i => i.id === String(e.active.id));
+    if (!item) return;
+    // overId can be a column id or another item id
+    let newStatus = overId;
+    if (!COLUMNS.some(c => c.id === overId)) {
+      const overItem = items.find(i => i.id === overId);
+      if (overItem) newStatus = overItem.status;
+    }
+    if (newStatus && newStatus !== item.status) moveItem(item, newStatus);
+  };
+
   if (loading) return <div className="text-center py-16"><Loader2 className="w-8 h-8 animate-spin text-accent mx-auto" /></div>;
+
+  const activeItem = activeId ? items.find(i => i.id === activeId) : null;
 
   return (
     <div>
       <h3 className="font-serif text-2xl text-foreground mb-6">To-Do Board</h3>
+      <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {COLUMNS.map(col => {
           const colItems = items.filter(i => i.status === col.id);
           const colIdx = COLUMNS.findIndex(c => c.id === col.id);
           return (
-            <div key={col.id} className={`${col.color} rounded-lg p-3 sm:p-4 min-h-[200px]`}>
+            <KanbanColumn key={col.id} id={col.id} className={`${col.color} rounded-lg p-3 sm:p-4 min-h-[200px]`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <h4 className="font-mono text-xs uppercase tracking-widest text-foreground/70">{col.label}</h4>
@@ -104,7 +130,7 @@ export default function TodoKanbanTab() {
 
               <div className="space-y-2">
                 {colItems.map(item => (
-                  <div key={item.id} className="bg-background border border-foreground/10 rounded p-3 group">
+                  <DraggableCard key={item.id} id={item.id} disabled={editingId === item.id}>
                     {editingId === item.id ? (
                       <div className="space-y-2">
                         <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="text-sm" />
@@ -136,13 +162,44 @@ export default function TodoKanbanTab() {
                         </div>
                       </>
                     )}
-                  </div>
+                  </DraggableCard>
                 ))}
               </div>
-            </div>
+            </KanbanColumn>
           );
         })}
       </div>
+      <DragOverlay>
+        {activeItem ? (
+          <div className="bg-background border border-accent rounded p-3 shadow-lg opacity-90 cursor-grabbing">
+            <h5 className="text-sm font-medium text-foreground">{activeItem.title}</h5>
+          </div>
+        ) : null}
+      </DragOverlay>
+      </DndContext>
+    </div>
+  );
+}
+
+function KanbanColumn({ id, className, children }: { id: string; className?: string; children: React.ReactNode }) {
+  const { setNodeRef, isOver } = useDroppable({ id });
+  return (
+    <div ref={setNodeRef} className={`${className || ''} ${isOver ? 'ring-2 ring-accent' : ''}`}>
+      {children}
+    </div>
+  );
+}
+
+function DraggableCard({ id, disabled, children }: { id: string; disabled?: boolean; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, disabled });
+  return (
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className={`bg-background border border-foreground/10 rounded p-3 group ${isDragging ? 'opacity-30' : ''} ${disabled ? '' : 'cursor-grab active:cursor-grabbing'}`}
+    >
+      {children}
     </div>
   );
 }
