@@ -150,3 +150,53 @@ export const PAGE_DEFAULTS: Record<string, ContentItem[]> = {
   services: SERVICES_DEFAULTS,
   portfolio: PORTFOLIO_DEFAULTS,
 };
+
+// ============ SITE-WIDE (Header / Footer / Admin branding) ============
+export const SITE_DEFAULTS: ContentItem[] = [
+  // Header / Brand
+  { section_key: 'brand', order_index: 0, content: {
+    name_bold: 'PRUTHVI',
+    name_italic: 'CO-ORDINATES',
+    logo_url: '',
+    admin_logo_url: '',
+    admin_title: 'Pruthvi Admin',
+  }},
+  // Header data points (lat/lon/est)
+  { section_key: 'header_data', order_index: 1, content: {
+    lat_label: 'LAT', lat_value: '21.1702° N',
+    lon_label: 'LON', lon_value: '72.8311° E',
+    est_label: 'EST', est_value: '1989',
+    cta_text: 'Start Project', cta_link: '/contact',
+  }},
+  // Footer main
+  { section_key: 'footer_main', order_index: 2, content: {
+    tagline: 'Defining the future, one coordinate at a time. Trusted by government bodies and private developers since 1989.',
+    copyright: '© {year} Pruthvi Co-ordinates. All rights reserved.',
+    sign_off: 'Designed with precision.',
+    linkedin_url: '#', instagram_url: '#', twitter_url: '#',
+    quick_links_heading: 'Quick Links',
+    services_heading: 'Services',
+    connect_heading: 'Connect',
+  }},
+  // Footer quick links
+  { section_key: 'footer_quick_link', order_index: 3, content: { label: 'Home', link: '/' }},
+  { section_key: 'footer_quick_link', order_index: 4, content: { label: 'Mission', link: '/mission' }},
+  { section_key: 'footer_quick_link', order_index: 5, content: { label: 'Expertise', link: '/expertise' }},
+  { section_key: 'footer_quick_link', order_index: 6, content: { label: 'Services', link: '/services' }},
+  { section_key: 'footer_quick_link', order_index: 7, content: { label: 'Portfolio', link: '/portfolio' }},
+  { section_key: 'footer_quick_link', order_index: 8, content: { label: 'Contact', link: '/contact' }},
+  // Footer services list
+  { section_key: 'footer_service', order_index: 9, content: { label: 'Topographical Survey' }},
+  { section_key: 'footer_service', order_index: 10, content: { label: 'Boundary Demarcation' }},
+  { section_key: 'footer_service', order_index: 11, content: { label: 'DGPS Control Survey' }},
+  { section_key: 'footer_service', order_index: 12, content: { label: 'Drone Aerial Survey' }},
+  { section_key: 'footer_service', order_index: 13, content: { label: 'As-Built Documentation' }},
+  // Header nav items
+  { section_key: 'nav_item', order_index: 14, content: { label: 'Home', link: '/' }},
+  { section_key: 'nav_item', order_index: 15, content: { label: 'Mission', link: '/mission' }},
+  { section_key: 'nav_item', order_index: 16, content: { label: 'Expertise', link: '/expertise' }},
+  { section_key: 'nav_item', order_index: 17, content: { label: 'Services', link: '/services' }},
+  { section_key: 'nav_item', order_index: 18, content: { label: 'Portfolio', link: '/portfolio' }},
+];
+
+PAGE_DEFAULTS.site = SITE_DEFAULTS;
