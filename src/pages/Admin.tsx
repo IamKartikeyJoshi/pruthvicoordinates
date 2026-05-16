@@ -23,6 +23,34 @@ import {
   adminFetchContent, adminBulkSaveContent,
 } from '@/lib/adminSession';
 import { PAGE_DEFAULTS, ContentItem } from '@/lib/defaultContent';
+import { fetchSiteContent } from '@/lib/adminSession';
+
+function AdminBrand() {
+  const [logo, setLogo] = useState<string>('');
+  const [title, setTitle] = useState<string>('Pruthvi Admin');
+  useEffect(() => {
+    let cancelled = false;
+    fetchSiteContent('site').then(res => {
+      if (cancelled) return;
+      const brand = (res.content || []).find((i: any) => i.section_key === 'brand');
+      if (brand?.content) {
+        setLogo(brand.content.admin_logo_url || brand.content.logo_url || '');
+        setTitle(brand.content.admin_title || 'Pruthvi Admin');
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
+  return (
+    <div className="flex items-center gap-2">
+      {logo ? (
+        <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
+      ) : (
+        <div className="w-3 h-3 bg-accent rounded-full" />
+      )}
+      <span className="font-serif text-xl">{title}</span>
+    </div>
+  );
+}
 
 interface Request {
   id: string;
