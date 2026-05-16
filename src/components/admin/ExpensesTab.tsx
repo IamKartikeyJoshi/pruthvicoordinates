@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { dashboardApi } from '@/lib/adminDashboard';
 import { toast } from '@/hooks/use-toast';
-import { Plus, Trash2, Edit, X, Check, Loader2, DollarSign } from 'lucide-react';
+import { Plus, Trash2, Edit, X, Check, Loader2, IndianRupee } from 'lucide-react';
 
 interface Expense {
   id: string;
@@ -88,7 +88,7 @@ export default function ExpensesTab() {
 
       <div className="space-y-2">
         {items.length === 0 ? (
-          <div className="text-center py-16 text-foreground/60"><DollarSign className="w-12 h-12 mx-auto mb-4 opacity-50" /><p>No expenses recorded</p></div>
+          <div className="text-center py-16 text-foreground/60"><IndianRupee className="w-12 h-12 mx-auto mb-4 opacity-50" /><p>No expenses recorded</p></div>
         ) : items.map(item => (
           <div key={item.id} className="border border-foreground/10 bg-popover p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             {editingId === item.id ? (
