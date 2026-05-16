@@ -23,6 +23,34 @@ import {
   adminFetchContent, adminBulkSaveContent,
 } from '@/lib/adminSession';
 import { PAGE_DEFAULTS, ContentItem } from '@/lib/defaultContent';
+import { fetchSiteContent } from '@/lib/adminSession';
+
+function AdminBrand() {
+  const [logo, setLogo] = useState<string>('');
+  const [title, setTitle] = useState<string>('Pruthvi Admin');
+  useEffect(() => {
+    let cancelled = false;
+    fetchSiteContent('site').then(res => {
+      if (cancelled) return;
+      const brand = (res.content || []).find((i: any) => i.section_key === 'brand');
+      if (brand?.content) {
+        setLogo(brand.content.admin_logo_url || brand.content.logo_url || '');
+        setTitle(brand.content.admin_title || 'Pruthvi Admin');
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
+  return (
+    <div className="flex items-center gap-2">
+      {logo ? (
+        <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
+      ) : (
+        <div className="w-3 h-3 bg-accent rounded-full" />
+      )}
+      <span className="font-serif text-xl">{title}</span>
+    </div>
+  );
+}
 
 interface Request {
   id: string;
@@ -41,11 +69,52 @@ interface Request {
   status: string;
 }
 
-type AdminTab = 'requests' | 'dashboard' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type AdminTab = 'requests' | 'dashboard' | 'site' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
 type DashboardSubTab = 'expenses' | 'checklist' | 'todos' | 'notes' | 'calendar';
 
 // Content section schemas for each page
 const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name: string; label: string; type: 'text' | 'textarea' | 'image' }[] }[]> = {
+  site: [
+    { key: 'brand', label: 'Brand & Logo', fields: [
+      { name: 'name_bold', label: 'Brand Name (Bold)', type: 'text' },
+      { name: 'name_italic', label: 'Brand Name (Italic)', type: 'text' },
+      { name: 'logo_url', label: 'Website Logo (URL or upload)', type: 'image' },
+      { name: 'admin_logo_url', label: 'Admin Panel Logo (URL or upload)', type: 'image' },
+      { name: 'admin_title', label: 'Admin Panel Title', type: 'text' },
+    ]},
+    { key: 'header_data', label: 'Header (LAT / LON / EST / CTA)', fields: [
+      { name: 'lat_label', label: 'LAT Label', type: 'text' },
+      { name: 'lat_value', label: 'LAT Value', type: 'text' },
+      { name: 'lon_label', label: 'LON Label', type: 'text' },
+      { name: 'lon_value', label: 'LON Value', type: 'text' },
+      { name: 'est_label', label: 'EST Label', type: 'text' },
+      { name: 'est_value', label: 'EST Value', type: 'text' },
+      { name: 'cta_text', label: 'Header CTA Text', type: 'text' },
+      { name: 'cta_link', label: 'Header CTA Link', type: 'text' },
+    ]},
+    { key: 'nav_item', label: 'Header Navigation Items', fields: [
+      { name: 'label', label: 'Label', type: 'text' },
+      { name: 'link', label: 'Link Path', type: 'text' },
+    ]},
+    { key: 'footer_main', label: 'Footer (Tagline / Social / Copyright)', fields: [
+      { name: 'tagline', label: 'Tagline', type: 'textarea' },
+      { name: 'quick_links_heading', label: 'Quick Links Heading', type: 'text' },
+      { name: 'services_heading', label: 'Services Heading', type: 'text' },
+      { name: 'connect_heading', label: 'Connect Heading', type: 'text' },
+      { name: 'linkedin_url', label: 'LinkedIn URL', type: 'text' },
+      { name: 'instagram_url', label: 'Instagram URL', type: 'text' },
+      { name: 'twitter_url', label: 'Twitter URL', type: 'text' },
+      { name: 'copyright', label: 'Copyright (use {year} for current year)', type: 'text' },
+      { name: 'sign_off', label: 'Sign-off line', type: 'text' },
+    ]},
+    { key: 'footer_quick_link', label: 'Footer Quick Links', fields: [
+      { name: 'label', label: 'Label', type: 'text' },
+      { name: 'link', label: 'Link Path', type: 'text' },
+    ]},
+    { key: 'footer_service', label: 'Footer Services List', fields: [
+      { name: 'label', label: 'Service Label', type: 'text' },
+    ]},
+  ],
   home: [
     { key: 'hero', label: 'Hero Section', fields: [
       { name: 'badge', label: 'Badge Text', type: 'text' },
@@ -421,6 +490,7 @@ const Admin = () => {
   const tabs: { id: AdminTab; label: string }[] = [
     { id: 'requests', label: 'Requests' },
     { id: 'dashboard', label: 'Dashboard' },
+    { id: 'site', label: 'Site (Header/Footer)' },
     { id: 'home', label: 'Home' },
     { id: 'mission', label: 'Mission' },
     { id: 'expertise', label: 'Expertise' },
@@ -429,13 +499,12 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ fontFamily: '"Poppins", system-ui, sans-serif' }}>
       {/* Header */}
       <header className="bg-foreground text-background py-4 px-6 sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <MapPin className="w-6 h-6 text-accent" />
-            <span className="font-serif text-xl">Pruthvi Admin</span>
+            <AdminBrand />
           </div>
           <div className="flex items-center gap-4">
             <Link to="/" className="text-background/60 hover:text-accent text-sm font-mono">← Back to Website</Link>
@@ -693,6 +762,22 @@ const Admin = () => {
                                       value={item.content[field.name] || ''}
                                       onChange={(e) => updateContentItem(index, field.name, e.target.value)}
                                       placeholder="https://example.com/image.jpg"
+                                    />
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        if (file.size > 2 * 1024 * 1024) {
+                                          toast({ title: 'Image too large', description: 'Please use an image under 2 MB or paste a URL.', variant: 'destructive' });
+                                          return;
+                                        }
+                                        const reader = new FileReader();
+                                        reader.onload = () => updateContentItem(index, field.name, String(reader.result || ''));
+                                        reader.readAsDataURL(file);
+                                      }}
+                                      className="mt-2 text-xs"
                                     />
                                     {item.content[field.name] && (
                                       <img src={item.content[field.name]} alt="Preview" className="mt-2 h-24 object-cover rounded border border-foreground/10" />

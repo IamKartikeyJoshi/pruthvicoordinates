@@ -1,18 +1,29 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { getItems, getFirst } = useSiteContent('site');
 
-  const navItems = [
-    { label: "Home", path: "/" },
-    { label: "Mission", path: "/mission" },
-    { label: "Expertise", path: "/expertise" },
-    { label: "Services", path: "/services" },
-    { label: "Portfolio", path: "/portfolio" },
-  ];
+  const brand = getFirst('brand')?.content || {};
+  const headerData = getFirst('header_data')?.content || {};
+  const navContent = getItems('nav_item');
+  const navItems = (navContent.length > 0 ? navContent : [
+    { content: { label: 'Home', link: '/' } },
+    { content: { label: 'Mission', link: '/mission' } },
+    { content: { label: 'Expertise', link: '/expertise' } },
+    { content: { label: 'Services', link: '/services' } },
+    { content: { label: 'Portfolio', link: '/portfolio' } },
+  ]).map((n: any) => ({ label: n.content.label, path: n.content.link }));
+
+  const nameBold = brand.name_bold || 'PRUTHVI';
+  const nameItalic = brand.name_italic || 'CO-ORDINATES';
+  const logoUrl = brand.logo_url;
+  const ctaText = headerData.cta_text || 'Start Project';
+  const ctaLink = headerData.cta_link || '/contact';
 
   const handleNav = (path: string) => {
     navigate(path);
@@ -28,27 +39,31 @@ const Header = () => {
             to="/" 
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-2.5 h-2.5 bg-accent rounded-full blinker" />
+            {logoUrl ? (
+              <img src={logoUrl} alt={nameBold} className="h-8 md:h-10 w-auto object-contain" />
+            ) : (
+              <div className="w-2.5 h-2.5 bg-accent rounded-full blinker" />
+            )}
             <h1 className="font-serif text-xl md:text-2xl lg:text-3xl tracking-tight font-bold text-foreground whitespace-nowrap">
-              PRUTHVI <span className="font-light italic">CO-ORDINATES</span>
+              {nameBold} <span className="font-light italic">{nameItalic}</span>
             </h1>
           </Link>
 
           {/* Data Points - Desktop */}
           <div className="hidden lg:flex items-center gap-4 font-mono text-[10px] tracking-widest text-foreground/60 border-l border-foreground/10 pl-3">
             <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
-              <span>LAT</span>
-              <span className="text-foreground/80 group-hover:text-accent">21.1702° N</span>
+              <span>{headerData.lat_label || 'LAT'}</span>
+              <span className="text-foreground/80 group-hover:text-accent">{headerData.lat_value || '21.1702° N'}</span>
             </div>
             <span className="text-foreground/20">//</span>
             <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
-              <span>LON</span>
-              <span className="text-foreground/80 group-hover:text-accent">72.8311° E</span>
+              <span>{headerData.lon_label || 'LON'}</span>
+              <span className="text-foreground/80 group-hover:text-accent">{headerData.lon_value || '72.8311° E'}</span>
             </div>
             <span className="text-foreground/20">//</span>
             <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
-              <span>EST</span>
-              <span className="text-foreground/80 group-hover:text-accent">1989</span>
+              <span>{headerData.est_label || 'EST'}</span>
+              <span className="text-foreground/80 group-hover:text-accent">{headerData.est_value || '1989'}</span>
             </div>
           </div>
         </div>
@@ -68,10 +83,10 @@ const Header = () => {
           </nav>
 
           <Link
-            to="/contact"
+            to={ctaLink}
             className="hidden lg:block px-4 xl:px-6 py-2.5 bg-foreground text-background font-mono text-xs hover:bg-accent transition-all duration-300 uppercase tracking-widest shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap"
           >
-            Start Project
+            {ctaText}
           </Link>
 
           {/* Mobile Menu Toggle */}
@@ -98,10 +113,10 @@ const Header = () => {
               </button>
             ))}
             <button
-              onClick={() => handleNav("/contact")}
+              onClick={() => handleNav(ctaLink)}
               className="mt-4 px-6 py-3 bg-foreground text-background font-mono text-xs uppercase tracking-widest"
             >
-              Start Project
+              {ctaText}
             </button>
           </nav>
         </div>
