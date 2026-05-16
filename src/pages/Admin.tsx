@@ -763,6 +763,22 @@ const Admin = () => {
                                       onChange={(e) => updateContentItem(index, field.name, e.target.value)}
                                       placeholder="https://example.com/image.jpg"
                                     />
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        if (file.size > 2 * 1024 * 1024) {
+                                          toast({ title: 'Image too large', description: 'Please use an image under 2 MB or paste a URL.', variant: 'destructive' });
+                                          return;
+                                        }
+                                        const reader = new FileReader();
+                                        reader.onload = () => updateContentItem(index, field.name, String(reader.result || ''));
+                                        reader.readAsDataURL(file);
+                                      }}
+                                      className="mt-2 text-xs"
+                                    />
                                     {item.content[field.name] && (
                                       <img src={item.content[field.name]} alt="Preview" className="mt-2 h-24 object-cover rounded border border-foreground/10" />
                                     )}
