@@ -31,6 +31,8 @@ export const HOME_DEFAULTS: ContentItem[] = [
   { section_key: 'process', order_index: 13, content: { number: '04', title: 'Delivery', description: 'Receive certified survey documents in digital and physical formats as required.', icon: 'Send' } },
   // Contact Info
   { section_key: 'contact_info', order_index: 14, content: { phone: '+91 98765 43210', email: 'info@pruthvisurvey.com' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 50, content: { eyebrow: 'Ready to Get Started?', heading: "Let's Map Your", heading_accent: 'Success', subheading: "Whether it's a small residential plot or a large infrastructure project, our team delivers precision surveying you can trust.", primary_text: 'Request a Quote', primary_link: '/contact', secondary_text: 'Book Consultation', secondary_link: '/book-appointment', phone: '+91 98765 43210', email: 'pruthvinay@gmail.com' } },
 ];
 
 // ============ MISSION PAGE ============
@@ -61,6 +63,13 @@ export const MISSION_DEFAULTS: ContentItem[] = [
   { section_key: 'team', order_index: 17, content: { name: 'Amit Sharma', role: 'Technical Director', experience: '22 years', specialty: 'DGPS & Geodetic Networks', license: 'Certified Geodetic Surveyor' } },
   { section_key: 'team', order_index: 18, content: { name: 'Priya Mehta', role: 'Operations Manager', experience: '15 years', specialty: 'Project Coordination', license: 'PMP Certified' } },
   { section_key: 'team', order_index: 19, content: { name: 'Vikram Singh', role: 'Senior Survey Engineer', experience: '18 years', specialty: 'Infrastructure & Construction', license: 'Certified Civil Engineer' } },
+  // Editable section headings
+  { section_key: 'philosophy_heading', order_index: 30, content: { eyebrow: 'Our Philosophy', title: 'The Art of', title_accent: 'Measurement' } },
+  { section_key: 'values_heading', order_index: 31, content: { eyebrow: 'Core Values', title: 'What We', title_accent: 'Stand For' } },
+  { section_key: 'journey_heading', order_index: 32, content: { eyebrow: 'Our Journey', title: '34 Years of', title_accent: 'Excellence' } },
+  { section_key: 'team_heading', order_index: 33, content: { eyebrow: 'Leadership Team', title: 'The Experts', title_accent: 'Behind the Data' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Ready to Work with', heading_accent: 'Precision?', subheading: 'Whether you need boundary demarcation, topographical surveys, or complex geodetic networks, our team is ready to deliver results you can trust.', primary_text: 'Start Your Project', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 // ============ EXPERTISE PAGE ============
@@ -92,6 +101,8 @@ export const EXPERTISE_DEFAULTS: ContentItem[] = [
   { section_key: 'certification', order_index: 20, content: { name: 'ISO 9001:2015 Certified', authority: 'Quality Management Systems' } },
   { section_key: 'certification', order_index: 21, content: { name: 'RERA Registered', authority: 'Real Estate Regulatory Authority' } },
   { section_key: 'certification', order_index: 22, content: { name: 'PWD Approved Contractor', authority: 'Public Works Department' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Experience', heading_accent: 'Precision', subheading: 'Discover how our technical capabilities can serve your project needs.', primary_text: 'Discuss Your Project', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 // ============ SERVICES PAGE ============
