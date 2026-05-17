@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Calendar, Ruler, Award, Loader2 } from "lucide-react";
+import { MapPin, Calendar, Ruler, Award, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import DynamicCTA from "@/components/DynamicCTA";
 import portfolioHero from "@/assets/portfolio-hero.jpg";
 import surveyInfrastructure from "@/assets/survey-infrastructure.jpg";
 import surveyDrone from "@/assets/survey-drone.jpg";
@@ -187,7 +187,11 @@ const Portfolio = () => {
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
               {testimonials.map((t, i) => (
                 <div key={i} className="border border-background/20 p-8">
-                  <div className="font-serif text-6xl text-accent/30 mb-4">"</div>
+                  <div className="w-16 h-16 bg-background/10 rounded-full flex items-center justify-center mb-6 group-hover:bg-accent/20 transition-colors">
+                    <span className="font-serif text-xl text-accent">
+                      {(t.author || '').split(' ').map((w: string) => w[0]).slice(0, 2).join('')}
+                    </span>
+                  </div>
                   <blockquote className="font-serif text-lg text-background/90 italic mb-6 leading-relaxed">{t.quote}</blockquote>
                   <div>
                     <div className="font-bold text-background">{t.author}</div>
@@ -199,18 +203,7 @@ const Portfolio = () => {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-24 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-6">Your Project Could Be <span className="italic text-accent">Next</span></h2>
-              <p className="text-foreground/60 text-lg mb-8">Join the hundreds of clients who trust Pruthvi Co-ordinates for their surveying needs.</p>
-              <Link to="/contact" className="inline-flex items-center gap-3 px-8 py-4 bg-foreground text-background font-mono text-sm uppercase tracking-widest hover:bg-accent transition-colors group">
-                Start Your Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </section>
+        <DynamicCTA pageKey="portfolio" fallback={{ heading: 'Your Project Could Be', headingAccent: 'Next', subheading: 'Join the hundreds of clients who trust Pruthvi Co-ordinates for their surveying needs.', primaryText: 'Start Your Project', primaryLink: '/contact' }} />
       </main>
       <Footer />
     </div>
