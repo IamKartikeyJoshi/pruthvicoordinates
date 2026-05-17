@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
-import { ArrowRight, Award, Target, Users, Clock, Shield, Compass, Loader2, MapPin, Star, Zap, icons } from "lucide-react";
+import { Target, Loader2, icons } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import DynamicCTA from "@/components/DynamicCTA";
 import surveyFieldwork from "@/assets/survey-fieldwork.jpg";
 
 const DynamicIcon = ({ name, ...props }: { name?: string; className?: string }) => {
@@ -29,8 +29,11 @@ const Mission = () => {
   const values = getItems('value').map(i => i.content);
   const milestones = getItems('milestone').map(i => i.content);
   const team = getItems('team').map(i => i.content);
+  const philosophyH = getFirst('philosophy_heading')?.content || { eyebrow: 'Our Philosophy', title: 'The Art of', title_accent: 'Measurement' };
+  const valuesH = getFirst('values_heading')?.content || { eyebrow: 'Core Values', title: 'What We', title_accent: 'Stand For' };
+  const journeyH = getFirst('journey_heading')?.content || { eyebrow: 'Our Journey', title: '34 Years of', title_accent: 'Excellence' };
+  const teamH = getFirst('team_heading')?.content || { eyebrow: 'Leadership Team', title: 'The Experts', title_accent: 'Behind the Data' };
 
-  const iconMap: Record<string, any> = { Target, Clock, Award, Users, Shield, Compass };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden page-bg">
@@ -39,7 +42,7 @@ const Mission = () => {
         {/* Hero */}
         <section className="py-16 md:py-24 bg-foreground text-background relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <img src={surveyFieldwork} alt="Survey fieldwork" className="w-full h-full object-cover" />
+            <img src={surveyFieldwork} alt="Survey fieldwork" className="w-full h-full object-cover" loading="lazy" decoding="async" width={1920} height={1080} />
           </div>
           <div className="absolute inset-0 bg-foreground/80" />
           <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -78,10 +81,10 @@ const Mission = () => {
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
               <div>
-                <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">Our Philosophy</h3>
+                <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">{philosophyH.eyebrow}</h3>
                 <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-foreground mb-6 md:mb-8">
-                  {philosophy.title ? philosophy.title.split(' ').slice(0, -1).join(' ') : 'The Art of'} <br />
-                  <span className="italic text-accent">{philosophy.title ? philosophy.title.split(' ').slice(-1)[0] : 'Measurement'}</span>
+                  {philosophyH.title} <br />
+                  <span className="italic text-accent">{philosophyH.title_accent}</span>
                 </h2>
                 <div className="space-y-4 md:space-y-6 text-foreground/70 text-base md:text-lg leading-relaxed">
                   {(philosophy.description || '').split('\n\n').map((p: string, i: number) => (
@@ -111,9 +114,9 @@ const Mission = () => {
         <section className="py-16 md:py-24 bg-secondary/20">
           <div className="container mx-auto px-4 md:px-6">
             <div className="mb-10 md:mb-16">
-              <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">Core Values</h3>
+              <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">{valuesH.eyebrow}</h3>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-foreground">
-                What We <br /><span className="italic text-accent">Stand For</span>
+                {valuesH.title} <br /><span className="italic text-accent">{valuesH.title_accent}</span>
               </h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -134,9 +137,9 @@ const Mission = () => {
         <section className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 md:px-6">
             <div className="mb-10 md:mb-16">
-              <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">Our Journey</h3>
+              <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">{journeyH.eyebrow}</h3>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-foreground">
-                34 Years of <br /><span className="italic text-accent">Excellence</span>
+                {journeyH.title} <br /><span className="italic text-accent">{journeyH.title_accent}</span>
               </h2>
             </div>
             <div className="relative">
@@ -158,9 +161,9 @@ const Mission = () => {
         <section className="py-16 md:py-24 bg-foreground text-background">
           <div className="container mx-auto px-4 md:px-6">
             <div className="mb-10 md:mb-16">
-              <h3 className="font-mono text-xs font-bold tracking-widest text-accent mb-4 uppercase">Leadership Team</h3>
+              <h3 className="font-mono text-xs font-bold tracking-widest text-accent mb-4 uppercase">{teamH.eyebrow}</h3>
               <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-background">
-                The Experts <br /><span className="italic text-background/80">Behind the Data</span>
+                {teamH.title} <br /><span className="italic text-background/80">{teamH.title_accent}</span>
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
@@ -182,22 +185,7 @@ const Mission = () => {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 md:py-24 bg-background">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="font-serif text-3xl md:text-5xl text-foreground mb-4 md:mb-6">
-                Ready to Work with <span className="italic text-accent">Precision</span>?
-              </h2>
-              <p className="text-foreground/60 text-base md:text-lg mb-6 md:mb-8">
-                Whether you need boundary demarcation, topographical surveys, or complex geodetic networks, our team is ready to deliver results you can trust.
-              </p>
-              <Link to="/contact" className="inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 bg-foreground text-background font-mono text-xs md:text-sm uppercase tracking-widest hover:bg-accent transition-colors group">
-                Start Your Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </section>
+        <DynamicCTA pageKey="mission" fallback={{ heading: 'Ready to Work with', headingAccent: 'Precision?', subheading: 'Whether you need boundary demarcation, topographical surveys, or complex geodetic networks, our team is ready to deliver results you can trust.', primaryText: 'Start Your Project', primaryLink: '/contact' }} />
       </main>
       <Footer />
     </div>

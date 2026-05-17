@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Award, CheckCircle, FileCheck, Loader2 } from "lucide-react";
+import { Award, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import DynamicCTA from "@/components/DynamicCTA";
 import surveyTotalstation from "@/assets/survey-totalstation.jpg";
 import surveyDgps from "@/assets/survey-dgps.jpg";
 import surveyDrone from "@/assets/survey-drone.jpg";
@@ -181,18 +181,7 @@ const Expertise = () => {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-24 bg-background">
-          <div className="container mx-auto px-6">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-6">Experience <span className="italic text-accent">Precision</span></h2>
-              <p className="text-foreground/60 text-lg mb-8">Discover how our technical capabilities can serve your project needs.</p>
-              <Link to="/contact" className="inline-flex items-center gap-3 px-8 py-4 bg-foreground text-background font-mono text-sm uppercase tracking-widest hover:bg-accent transition-colors group">
-                Discuss Your Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </section>
+        <DynamicCTA pageKey="expertise" fallback={{ heading: 'Experience', headingAccent: 'Precision', subheading: 'Discover how our technical capabilities can serve your project needs.', primaryText: 'Discuss Your Project', primaryLink: '/contact' }} />
       </main>
       <Footer />
     </div>

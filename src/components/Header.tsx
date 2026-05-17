@@ -32,36 +32,36 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-foreground/5 transition-all duration-300">
-      <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-3 md:px-6 py-4 flex justify-between items-center gap-3">
         {/* Brand */}
-        <div className="flex items-center gap-6 lg:gap-10">
+        <div className="flex items-center gap-3 lg:gap-5 min-w-0">
           <Link 
             to="/" 
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-2 md:gap-3 cursor-pointer group shrink-0"
           >
             {logoUrl ? (
               <img src={logoUrl} alt={nameBold} className="h-8 md:h-10 w-auto object-contain" />
             ) : (
               <div className="w-2.5 h-2.5 bg-accent rounded-full blinker" />
             )}
-            <h1 className="font-serif text-xl md:text-2xl lg:text-3xl tracking-tight font-bold text-foreground whitespace-nowrap">
+            <h1 className="font-serif text-lg md:text-xl lg:text-2xl tracking-tight font-bold text-foreground whitespace-nowrap">
               {nameBold} <span className="font-light italic">{nameItalic}</span>
             </h1>
           </Link>
 
           {/* Data Points - Desktop */}
-          <div className="hidden lg:flex items-center gap-4 font-mono text-[10px] tracking-widest text-foreground/60 border-l border-foreground/10 pl-3">
-            <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
+          <div className="hidden xl:flex items-center gap-2 font-mono text-[10px] tracking-wider text-foreground/60 border-l border-foreground/10 pl-3 whitespace-nowrap tabular-nums">
+            <div className="flex items-center gap-1.5 group hover:text-accent transition-colors cursor-crosshair">
               <span>{headerData.lat_label || 'LAT'}</span>
               <span className="text-foreground/80 group-hover:text-accent">{headerData.lat_value || '21.1702° N'}</span>
             </div>
             <span className="text-foreground/20">//</span>
-            <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
+            <div className="flex items-center gap-1.5 group hover:text-accent transition-colors cursor-crosshair">
               <span>{headerData.lon_label || 'LON'}</span>
               <span className="text-foreground/80 group-hover:text-accent">{headerData.lon_value || '72.8311° E'}</span>
             </div>
-            <span className="text-foreground/20">//</span>
-            <div className="flex items-center gap-2 group hover:text-accent transition-colors cursor-crosshair">
+            <span className="text-foreground/20 hidden 2xl:inline">//</span>
+            <div className="hidden 2xl:flex items-center gap-1.5 group hover:text-accent transition-colors cursor-crosshair">
               <span>{headerData.est_label || 'EST'}</span>
               <span className="text-foreground/80 group-hover:text-accent">{headerData.est_value || '1989'}</span>
             </div>
@@ -69,8 +69,8 @@ const Header = () => {
         </div>
 
         {/* Navigation - Desktop */}
-        <div className="flex items-center gap-4 lg:gap-8">
-          <nav className="hidden lg:flex gap-4 xl:gap-6 font-sans text-xs font-semibold tracking-widest uppercase text-foreground/70">
+        <div className="flex items-center gap-3 lg:gap-5 shrink-0">
+          <nav className="hidden lg:flex gap-3 xl:gap-5 font-sans text-xs font-semibold tracking-widest uppercase text-foreground/70">
             {navItems.map((item) => (
               <Link
                 key={item.path}

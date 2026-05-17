@@ -66,6 +66,8 @@ const HeroSection = ({ heroData }: Props) => {
               src={heroImage} 
               alt="Professional surveyor at work with precision equipment" 
               className="w-full h-full object-cover"
+              width={1200} height={1500}
+              fetchPriority="high" decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
           </div>

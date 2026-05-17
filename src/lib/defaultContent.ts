@@ -31,6 +31,8 @@ export const HOME_DEFAULTS: ContentItem[] = [
   { section_key: 'process', order_index: 13, content: { number: '04', title: 'Delivery', description: 'Receive certified survey documents in digital and physical formats as required.', icon: 'Send' } },
   // Contact Info
   { section_key: 'contact_info', order_index: 14, content: { phone: '+91 98765 43210', email: 'info@pruthvisurvey.com' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 50, content: { eyebrow: 'Ready to Get Started?', heading: "Let's Map Your", heading_accent: 'Success', subheading: "Whether it's a small residential plot or a large infrastructure project, our team delivers precision surveying you can trust.", primary_text: 'Request a Quote', primary_link: '/contact', secondary_text: 'Book Consultation', secondary_link: '/book-appointment', phone: '+91 98765 43210', email: 'pruthvinay@gmail.com' } },
 ];
 
 // ============ MISSION PAGE ============
@@ -61,6 +63,13 @@ export const MISSION_DEFAULTS: ContentItem[] = [
   { section_key: 'team', order_index: 17, content: { name: 'Amit Sharma', role: 'Technical Director', experience: '22 years', specialty: 'DGPS & Geodetic Networks', license: 'Certified Geodetic Surveyor' } },
   { section_key: 'team', order_index: 18, content: { name: 'Priya Mehta', role: 'Operations Manager', experience: '15 years', specialty: 'Project Coordination', license: 'PMP Certified' } },
   { section_key: 'team', order_index: 19, content: { name: 'Vikram Singh', role: 'Senior Survey Engineer', experience: '18 years', specialty: 'Infrastructure & Construction', license: 'Certified Civil Engineer' } },
+  // Editable section headings
+  { section_key: 'philosophy_heading', order_index: 30, content: { eyebrow: 'Our Philosophy', title: 'The Art of', title_accent: 'Measurement' } },
+  { section_key: 'values_heading', order_index: 31, content: { eyebrow: 'Core Values', title: 'What We', title_accent: 'Stand For' } },
+  { section_key: 'journey_heading', order_index: 32, content: { eyebrow: 'Our Journey', title: '34 Years of', title_accent: 'Excellence' } },
+  { section_key: 'team_heading', order_index: 33, content: { eyebrow: 'Leadership Team', title: 'The Experts', title_accent: 'Behind the Data' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Ready to Work with', heading_accent: 'Precision?', subheading: 'Whether you need boundary demarcation, topographical surveys, or complex geodetic networks, our team is ready to deliver results you can trust.', primary_text: 'Start Your Project', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 // ============ EXPERTISE PAGE ============
@@ -92,6 +101,8 @@ export const EXPERTISE_DEFAULTS: ContentItem[] = [
   { section_key: 'certification', order_index: 20, content: { name: 'ISO 9001:2015 Certified', authority: 'Quality Management Systems' } },
   { section_key: 'certification', order_index: 21, content: { name: 'RERA Registered', authority: 'Real Estate Regulatory Authority' } },
   { section_key: 'certification', order_index: 22, content: { name: 'PWD Approved Contractor', authority: 'Public Works Department' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Experience', heading_accent: 'Precision', subheading: 'Discover how our technical capabilities can serve your project needs.', primary_text: 'Discuss Your Project', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 // ============ SERVICES PAGE ============
@@ -114,6 +125,8 @@ export const SERVICES_DEFAULTS: ContentItem[] = [
   { section_key: 'faq', order_index: 12, content: { question: 'What documents do I need to provide?', answer: 'We typically need your property deed/title documents, any existing survey plans, and revenue records (7/12 extract).' } },
   { section_key: 'faq', order_index: 13, content: { question: 'Are your surveys legally valid?', answer: 'Yes. All our surveys are conducted by government-licensed surveyors and comply with relevant regulations.' } },
   { section_key: 'faq', order_index: 14, content: { question: 'Do you work outside Gujarat?', answer: 'While our primary service area is Gujarat, we undertake projects across India for larger clients.' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Ready to Get', heading_accent: 'Started?', subheading: 'Tell us about your project and we will provide a detailed proposal within 24 hours.', primary_text: 'Request a Quote', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 // ============ PORTFOLIO PAGE ============
@@ -141,6 +154,8 @@ export const PORTFOLIO_DEFAULTS: ContentItem[] = [
   { section_key: 'testimonial', order_index: 16, content: { quote: 'Pruthvi Co-ordinates has been our go-to surveyor for over a decade. Their accuracy and professionalism are unmatched in the industry.', author: 'Rakesh Mehta', position: 'Project Director, L&T Infrastructure' } },
   { section_key: 'testimonial', order_index: 17, content: { quote: 'The boundary survey they conducted helped us resolve a long-standing dispute. Their documentation was accepted without question by the revenue tribunal.', author: 'Advocate Suresh Patel', position: 'Property Law Specialist' } },
   { section_key: 'testimonial', order_index: 18, content: { quote: 'Fast, accurate, and always available when we need them. We have relied on their surveys for all our township projects.', author: 'Nitin Shah', position: 'VP Operations, Goyal Group' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Your Project Could Be', heading_accent: 'Next', subheading: 'Join the hundreds of clients who trust Pruthvi Co-ordinates for their surveying needs.', primary_text: 'Start Your Project', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 export const PAGE_DEFAULTS: Record<string, ContentItem[]> = {
@@ -150,6 +165,56 @@ export const PAGE_DEFAULTS: Record<string, ContentItem[]> = {
   services: SERVICES_DEFAULTS,
   portfolio: PORTFOLIO_DEFAULTS,
 };
+
+// ============ CONTACT PAGE ============
+export const CONTACT_DEFAULTS: ContentItem[] = [
+  { section_key: 'hero', order_index: 0, content: { subtitle: 'Get in Touch', title: "Let's Define Your", titleAccent: 'Coordinates', description: 'Ready to start your surveying project? Our team is here to help you navigate from concept to completion with precision and expertise.', cta_text: 'Request Appointment', cta_link: '/book-appointment' } },
+  { section_key: 'method', order_index: 1, content: { icon: 'Phone', title: 'Phone', primary: '+91 98765 43210', secondary: '+91 79 2658 1234', note: 'Available Mon-Sat, 9AM-7PM' } },
+  { section_key: 'method', order_index: 2, content: { icon: 'Mail', title: 'Email', primary: 'info@pruthvisurvey.com', secondary: 'projects@pruthvisurvey.com', note: 'Response within 24 hours' } },
+  { section_key: 'method', order_index: 3, content: { icon: 'MapPin', title: 'Head Office', primary: '402, Titanium City Center', secondary: '100 Feet Ring Road, Ahmedabad', note: 'Gujarat - 380015' } },
+  { section_key: 'method', order_index: 4, content: { icon: 'Clock', title: 'Working Hours', primary: 'Monday - Saturday', secondary: '9:00 AM - 7:00 PM', note: 'Sunday by appointment' } },
+  { section_key: 'office', order_index: 5, content: { city: 'Ahmedabad', type: 'Head Office', address: '402, Titanium City Center, 100 Feet Ring Road, Satellite, Ahmedabad - 380015', phone: '+91 79 2658 1234' } },
+  { section_key: 'office', order_index: 6, content: { city: 'Surat', type: 'Branch Office', address: 'B-201, Millennium Business Park, Majura Gate, Surat - 395002', phone: '+91 261 245 6789' } },
+  { section_key: 'office', order_index: 7, content: { city: 'Vadodara', type: 'Branch Office', address: '15, Shreeji Complex, Alkapuri, Vadodara - 390007', phone: '+91 265 234 5678' } },
+  { section_key: 'office_map', order_index: 8, content: { embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.0427069847776!2d72.50860231496791!3d23.02505098494685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b2b0c0b0001%3A0x0!2sTitanium%20City%20Center!5e0!3m2!1sen!2sin!4v1640000000000!5m2!1sen!2sin' } },
+  { section_key: 'faq', order_index: 9, content: { question: 'What information do I need to request a quote?', answer: 'To provide an accurate quote, we need the type of survey, location, approximate area, any existing documents, and your timeline.' } },
+  { section_key: 'faq', order_index: 10, content: { question: 'How quickly can you start a project?', answer: 'For standard projects we begin field work within 3-5 business days. Rush projects can be accommodated with prior arrangement.' } },
+  { section_key: 'faq', order_index: 11, content: { question: 'Do you provide services outside Gujarat?', answer: 'Yes. Additional mobilization charges apply for locations outside Gujarat.' } },
+  { section_key: 'faq', order_index: 12, content: { question: 'What are your payment terms?', answer: '50% advance to commence work, balance on delivery. Milestone-based payments for larger projects.' } },
+  { section_key: 'emergency', order_index: 13, content: { title: 'Urgent Survey Requirement?', description: 'For time-critical projects or emergency survey needs, call our priority line directly. We offer expedited services for urgent requirements.', phone: '+91 98765 00000', note: '24/7 Priority Line' } },
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Ready to Map Your', heading_accent: 'Project?', subheading: 'Let our team know your needs and we will respond within 24 hours.', primary_text: 'Book Appointment', primary_link: '/book-appointment', secondary_text: '', secondary_link: '' } },
+];
+
+// ============ BOOK APPOINTMENT PAGE ============
+export const BOOK_DEFAULTS: ContentItem[] = [
+  { section_key: 'hero', order_index: 0, content: { subtitle: 'Book an Appointment', title: 'Schedule Your', titleAccent: 'Survey', description: "Choose your preferred date and time. We'll confirm within 24 hours." } },
+  { section_key: 'project_type', order_index: 1, content: { label: 'Topographical Survey', icon: '📍' } },
+  { section_key: 'project_type', order_index: 2, content: { label: 'Boundary Demarcation', icon: '🔲' } },
+  { section_key: 'project_type', order_index: 3, content: { label: 'DGPS Control Survey', icon: '📡' } },
+  { section_key: 'project_type', order_index: 4, content: { label: 'As-Built Survey', icon: '🏗️' } },
+  { section_key: 'project_type', order_index: 5, content: { label: 'Contour Mapping', icon: '🗺️' } },
+  { section_key: 'project_type', order_index: 6, content: { label: 'LiDAR Survey', icon: '🛰️' } },
+  { section_key: 'project_type', order_index: 7, content: { label: 'Drone Aerial Survey', icon: '✈️' } },
+  { section_key: 'project_type', order_index: 8, content: { label: 'Bathymetry Survey', icon: '🌊' } },
+  { section_key: 'project_type', order_index: 9, content: { label: 'Route Survey', icon: '🛤️' } },
+  { section_key: 'project_type', order_index: 10, content: { label: 'Other / Consultation', icon: '💬' } },
+  { section_key: 'time_slot', order_index: 11, content: { time: '09:00 AM' } },
+  { section_key: 'time_slot', order_index: 12, content: { time: '09:30 AM' } },
+  { section_key: 'time_slot', order_index: 13, content: { time: '10:00 AM' } },
+  { section_key: 'time_slot', order_index: 14, content: { time: '10:30 AM' } },
+  { section_key: 'time_slot', order_index: 15, content: { time: '11:00 AM' } },
+  { section_key: 'time_slot', order_index: 16, content: { time: '11:30 AM' } },
+  { section_key: 'time_slot', order_index: 17, content: { time: '02:00 PM' } },
+  { section_key: 'time_slot', order_index: 18, content: { time: '02:30 PM' } },
+  { section_key: 'time_slot', order_index: 19, content: { time: '03:00 PM' } },
+  { section_key: 'time_slot', order_index: 20, content: { time: '03:30 PM' } },
+  { section_key: 'time_slot', order_index: 21, content: { time: '04:00 PM' } },
+  { section_key: 'time_slot', order_index: 22, content: { time: '04:30 PM' } },
+  { section_key: 'time_slot', order_index: 23, content: { time: '05:00 PM' } },
+];
+
+PAGE_DEFAULTS.contact = CONTACT_DEFAULTS;
+PAGE_DEFAULTS.book = BOOK_DEFAULTS;
 
 // ============ SITE-WIDE (Header / Footer / Admin branding) ============
 export const SITE_DEFAULTS: ContentItem[] = [

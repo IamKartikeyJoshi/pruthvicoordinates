@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Link } from "react-router-dom";
 import { ArrowRight, Clock, CheckCircle, FileText, Users, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import DynamicCTA from "@/components/DynamicCTA";
 import surveyInfrastructure from "@/assets/survey-infrastructure.jpg";
 
 const Services = () => {
@@ -28,7 +28,7 @@ const Services = () => {
         {/* Hero */}
         <section className="py-24 bg-secondary/20 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <img src={surveyInfrastructure} alt="Infrastructure" className="w-full h-full object-cover" />
+            <img src={surveyInfrastructure} alt="Infrastructure" className="w-full h-full object-cover" loading="lazy" decoding="async" width={1920} height={1080} />
           </div>
           <div className="absolute inset-0 bg-secondary/60" />
           <div className="container mx-auto px-6 relative z-10">
@@ -141,18 +141,7 @@ const Services = () => {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-24 bg-popover border-t border-foreground/10">
-          <div className="container mx-auto px-6">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-6">Ready to Get <span className="italic text-accent">Started</span>?</h2>
-              <p className="text-foreground/60 text-lg mb-8">Tell us about your project and we will provide a detailed proposal within 24 hours.</p>
-              <Link to="/contact" className="inline-flex items-center gap-3 px-8 py-4 bg-foreground text-background font-mono text-sm uppercase tracking-widest hover:bg-accent transition-colors group">
-                Request a Quote <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </div>
-        </section>
+        <DynamicCTA pageKey="services" fallback={{ heading: 'Ready to Get', headingAccent: 'Started?', subheading: 'Tell us about your project and we will provide a detailed proposal within 24 hours.', primaryText: 'Request a Quote', primaryLink: '/contact' }} />
       </main>
       <Footer />
     </div>

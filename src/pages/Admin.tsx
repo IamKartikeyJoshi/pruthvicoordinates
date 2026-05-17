@@ -69,7 +69,7 @@ interface Request {
   status: string;
 }
 
-type AdminTab = 'requests' | 'dashboard' | 'site' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio';
+type AdminTab = 'requests' | 'dashboard' | 'site' | 'home' | 'mission' | 'expertise' | 'services' | 'portfolio' | 'contact' | 'book';
 type DashboardSubTab = 'expenses' | 'checklist' | 'todos' | 'notes' | 'calendar';
 
 // Content section schemas for each page
@@ -147,6 +147,18 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'phone', label: 'Phone Number', type: 'text' },
       { name: 'email', label: 'Email Address', type: 'text' },
     ]},
+    { key: 'cta_section', label: 'CTA Block (Ready to Get Started)', fields: [
+      { name: 'eyebrow', label: 'Eyebrow / Small heading', type: 'text' },
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'heading_accent', label: 'Heading Accent (italic)', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'textarea' },
+      { name: 'primary_text', label: 'Primary Button Text', type: 'text' },
+      { name: 'primary_link', label: 'Primary Button Link', type: 'text' },
+      { name: 'secondary_text', label: 'Secondary Button Text', type: 'text' },
+      { name: 'secondary_link', label: 'Secondary Button Link', type: 'text' },
+      { name: 'phone', label: 'Phone (optional)', type: 'text' },
+      { name: 'email', label: 'Email (optional)', type: 'text' },
+    ]},
   ],
   mission: [
     { key: 'hero', label: 'Hero Section', fields: [
@@ -183,6 +195,36 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'specialty', label: 'Specialty', type: 'text' },
       { name: 'license', label: 'License', type: 'text' },
     ]},
+    { key: 'philosophy_heading', label: 'Philosophy Section Heading', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'title_accent', label: 'Title Accent (italic)', type: 'text' },
+    ]},
+    { key: 'values_heading', label: 'Core Values Section Heading', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'title_accent', label: 'Title Accent (italic)', type: 'text' },
+    ]},
+    { key: 'journey_heading', label: 'Our Journey Section Heading', fields: [
+      { name: 'eyebrow', label: 'Eyebrow (e.g. Our Journey)', type: 'text' },
+      { name: 'title', label: 'Title (e.g. 34 Years of)', type: 'text' },
+      { name: 'title_accent', label: 'Title Accent (e.g. Excellence)', type: 'text' },
+    ]},
+    { key: 'team_heading', label: 'Leadership Team Section Heading', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'title_accent', label: 'Title Accent (italic)', type: 'text' },
+    ]},
+    { key: 'cta_section', label: 'CTA Block', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'heading_accent', label: 'Heading Accent (italic)', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'textarea' },
+      { name: 'primary_text', label: 'Primary Button Text', type: 'text' },
+      { name: 'primary_link', label: 'Primary Button Link', type: 'text' },
+      { name: 'secondary_text', label: 'Secondary Button Text', type: 'text' },
+      { name: 'secondary_link', label: 'Secondary Button Link', type: 'text' },
+    ]},
   ],
   expertise: [
     { key: 'hero', label: 'Hero Section', fields: [
@@ -211,6 +253,16 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'name', label: 'Certification Name', type: 'text' },
       { name: 'authority', label: 'Authority', type: 'text' },
     ]},
+    { key: 'cta_section', label: 'CTA Block', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'heading_accent', label: 'Heading Accent (italic)', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'textarea' },
+      { name: 'primary_text', label: 'Primary Button Text', type: 'text' },
+      { name: 'primary_link', label: 'Primary Button Link', type: 'text' },
+      { name: 'secondary_text', label: 'Secondary Button Text', type: 'text' },
+      { name: 'secondary_link', label: 'Secondary Button Link', type: 'text' },
+    ]},
   ],
   services: [
     { key: 'hero', label: 'Hero Section', fields: [
@@ -235,6 +287,16 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
     { key: 'faq', label: 'FAQs', fields: [
       { name: 'question', label: 'Question', type: 'text' },
       { name: 'answer', label: 'Answer', type: 'textarea' },
+    ]},
+    { key: 'cta_section', label: 'CTA Block', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'heading_accent', label: 'Heading Accent (italic)', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'textarea' },
+      { name: 'primary_text', label: 'Primary Button Text', type: 'text' },
+      { name: 'primary_link', label: 'Primary Button Link', type: 'text' },
+      { name: 'secondary_text', label: 'Secondary Button Text', type: 'text' },
+      { name: 'secondary_link', label: 'Secondary Button Link', type: 'text' },
     ]},
   ],
   portfolio: [
@@ -270,6 +332,77 @@ const PAGE_SCHEMAS: Record<string, { key: string; label: string; fields: { name:
       { name: 'quote', label: 'Quote', type: 'textarea' },
       { name: 'author', label: 'Author', type: 'text' },
       { name: 'position', label: 'Position', type: 'text' },
+    ]},
+    { key: 'cta_section', label: 'CTA Block', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'heading_accent', label: 'Heading Accent (italic)', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'textarea' },
+      { name: 'primary_text', label: 'Primary Button Text', type: 'text' },
+      { name: 'primary_link', label: 'Primary Button Link', type: 'text' },
+      { name: 'secondary_text', label: 'Secondary Button Text', type: 'text' },
+      { name: 'secondary_link', label: 'Secondary Button Link', type: 'text' },
+    ]},
+  ],
+  contact: [
+    { key: 'hero', label: 'Hero Section', fields: [
+      { name: 'subtitle', label: 'Subtitle (Eyebrow)', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'titleAccent', label: 'Title Accent (italic)', type: 'text' },
+      { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'cta_text', label: 'Hero Button Text', type: 'text' },
+      { name: 'cta_link', label: 'Hero Button Link', type: 'text' },
+    ]},
+    { key: 'method', label: 'Contact Methods', fields: [
+      { name: 'icon', label: 'Icon (Phone/Mail/MapPin/Clock)', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'primary', label: 'Primary Line', type: 'text' },
+      { name: 'secondary', label: 'Secondary Line', type: 'text' },
+      { name: 'note', label: 'Note', type: 'text' },
+    ]},
+    { key: 'office', label: 'Office Locations', fields: [
+      { name: 'city', label: 'City', type: 'text' },
+      { name: 'type', label: 'Office Type', type: 'text' },
+      { name: 'address', label: 'Address', type: 'textarea' },
+      { name: 'phone', label: 'Phone', type: 'text' },
+    ]},
+    { key: 'office_map', label: 'Office Map Embed', fields: [
+      { name: 'embed_url', label: 'Google Maps Embed URL', type: 'textarea' },
+    ]},
+    { key: 'faq', label: 'FAQs', fields: [
+      { name: 'question', label: 'Question', type: 'text' },
+      { name: 'answer', label: 'Answer', type: 'textarea' },
+    ]},
+    { key: 'emergency', label: 'Emergency Contact Banner', fields: [
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'description', label: 'Description', type: 'textarea' },
+      { name: 'phone', label: 'Phone Number', type: 'text' },
+      { name: 'note', label: 'Note (e.g. 24/7 Priority Line)', type: 'text' },
+    ]},
+    { key: 'cta_section', label: 'CTA Block', fields: [
+      { name: 'eyebrow', label: 'Eyebrow', type: 'text' },
+      { name: 'heading', label: 'Heading', type: 'text' },
+      { name: 'heading_accent', label: 'Heading Accent (italic)', type: 'text' },
+      { name: 'subheading', label: 'Subheading', type: 'textarea' },
+      { name: 'primary_text', label: 'Primary Button Text', type: 'text' },
+      { name: 'primary_link', label: 'Primary Button Link', type: 'text' },
+      { name: 'secondary_text', label: 'Secondary Button Text', type: 'text' },
+      { name: 'secondary_link', label: 'Secondary Button Link', type: 'text' },
+    ]},
+  ],
+  book: [
+    { key: 'hero', label: 'Hero Section', fields: [
+      { name: 'subtitle', label: 'Subtitle (Eyebrow)', type: 'text' },
+      { name: 'title', label: 'Title', type: 'text' },
+      { name: 'titleAccent', label: 'Title Accent (italic)', type: 'text' },
+      { name: 'description', label: 'Description', type: 'textarea' },
+    ]},
+    { key: 'project_type', label: 'Survey Project Types', fields: [
+      { name: 'label', label: 'Label', type: 'text' },
+      { name: 'icon', label: 'Emoji Icon', type: 'text' },
+    ]},
+    { key: 'time_slot', label: 'Available Time Slots', fields: [
+      { name: 'time', label: 'Time (e.g. 09:00 AM)', type: 'text' },
     ]},
   ],
 };
@@ -496,6 +629,8 @@ const Admin = () => {
     { id: 'expertise', label: 'Expertise' },
     { id: 'services', label: 'Services' },
     { id: 'portfolio', label: 'Portfolio' },
+    { id: 'contact', label: 'Contact' },
+    { id: 'book', label: 'Book Appointment' },
   ];
 
   return (
