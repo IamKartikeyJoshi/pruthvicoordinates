@@ -39,7 +39,7 @@ const Mission = () => {
         {/* Hero */}
         <section className="py-16 md:py-24 bg-foreground text-background relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <img src={surveyFieldwork} alt="Survey fieldwork" className="w-full h-full object-cover" />
+            <img src={surveyFieldwork} alt="Survey fieldwork" className="w-full h-full object-cover" loading="lazy" decoding="async" width={1920} height={1080} />
           </div>
           <div className="absolute inset-0 bg-foreground/80" />
           <div className="container mx-auto px-4 md:px-6 relative z-10">

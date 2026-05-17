@@ -28,7 +28,7 @@ const Services = () => {
         {/* Hero */}
         <section className="py-24 bg-secondary/20 relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <img src={surveyInfrastructure} alt="Infrastructure" className="w-full h-full object-cover" />
+            <img src={surveyInfrastructure} alt="Infrastructure" className="w-full h-full object-cover" loading="lazy" decoding="async" width={1920} height={1080} />
           </div>
           <div className="absolute inset-0 bg-secondary/60" />
           <div className="container mx-auto px-6 relative z-10">
