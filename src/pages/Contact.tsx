@@ -2,81 +2,27 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactSection from "@/components/ContactSection";
-import { MapPin, Phone, Mail, Clock, MessageSquare, Calendar } from "lucide-react";
+import DynamicCTA from "@/components/DynamicCTA";
+import { MapPin, Phone, Mail, Clock, MessageSquare, Calendar, icons } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSiteContent } from "@/hooks/useSiteContent";
+
+const DynIcon = ({ name, className }: { name?: string; className?: string }) => {
+  const fallback = { Phone, Mail, MapPin, Clock } as any;
+  if (name && (icons as any)[name]) { const I = (icons as any)[name]; return <I className={className} />; }
+  const I = (fallback[name || 'Phone'] || Phone);
+  return <I className={className} />;
+};
 
 const Contact = () => {
-  const contactMethods = [
-    {
-      icon: Phone,
-      title: "Phone",
-      primary: "+91 98765 43210",
-      secondary: "+91 79 2658 1234",
-      note: "Available Mon-Sat, 9AM-7PM",
-    },
-    {
-      icon: Mail,
-      title: "Email",
-      primary: "info@pruthvisurvey.com",
-      secondary: "projects@pruthvisurvey.com",
-      note: "Response within 24 hours",
-    },
-    {
-      icon: MapPin,
-      title: "Head Office",
-      primary: "402, Titanium City Center",
-      secondary: "100 Feet Ring Road, Ahmedabad",
-      note: "Gujarat - 380015",
-    },
-    {
-      icon: Clock,
-      title: "Working Hours",
-      primary: "Monday - Saturday",
-      secondary: "9:00 AM - 7:00 PM",
-      note: "Sunday by appointment",
-    },
-  ];
-
-  const offices = [
-    {
-      city: "Ahmedabad",
-      type: "Head Office",
-      address: "402, Titanium City Center, 100 Feet Ring Road, Satellite, Ahmedabad - 380015",
-      phone: "+91 79 2658 1234",
-    },
-    {
-      city: "Surat",
-      type: "Branch Office",
-      address: "B-201, Millennium Business Park, Majura Gate, Surat - 395002",
-      phone: "+91 261 245 6789",
-    },
-    {
-      city: "Vadodara",
-      type: "Branch Office",
-      address: "15, Shreeji Complex, Alkapuri, Vadodara - 390007",
-      phone: "+91 265 234 5678",
-    },
-  ];
-
-  const faqs = [
-    {
-      q: "What information do I need to request a quote?",
-      a: "To provide an accurate quote, we need: 1) Type of survey required, 2) Location/address of the property, 3) Approximate area or extent, 4) Any existing documents (survey plans, deeds), and 5) Your timeline requirements.",
-    },
-    {
-      q: "How quickly can you start a project?",
-      a: "For standard projects, we can typically begin field work within 3-5 business days of agreement. Emergency or rush projects can be accommodated with prior arrangement, subject to crew availability.",
-    },
-    {
-      q: "Do you provide services outside Gujarat?",
-      a: "Yes, we undertake projects across India for clients requiring our expertise. Additional mobilization charges apply for locations outside Gujarat. Contact us with your project details for a customized quote.",
-    },
-    {
-      q: "What are your payment terms?",
-      a: "We typically require 50% advance to commence work, with the balance due upon delivery of final reports. For large projects, milestone-based payment schedules can be arranged.",
-    },
-  ];
   const navigate = useNavigate();
+  const { getItems, getFirst } = useSiteContent('contact');
+  const hero = getFirst('hero')?.content || {};
+  const contactMethods = getItems('method').map(i => i.content);
+  const offices = getItems('office').map(i => i.content);
+  const officeMap = getFirst('office_map')?.content || {};
+  const faqs = getItems('faq').map(i => i.content);
+  const emergency = getFirst('emergency')?.content || {};
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden page-bg">
@@ -92,21 +38,21 @@ const Contact = () => {
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-4xl">
               <h3 className="font-mono text-xs font-bold tracking-widest text-foreground/40 mb-4 uppercase">
-                Get in Touch
+                {hero.subtitle || 'Get in Touch'}
               </h3>
               <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-foreground mb-8">
-                Let's Define Your <br />
-                <span className="italic text-accent">Coordinates</span>
+                {hero.title || "Let's Define Your"} <br />
+                <span className="italic text-accent">{hero.titleAccent || 'Coordinates'}</span>
               </h1>
               <p className="font-sans text-xl md:text-2xl text-foreground/70 max-w-2xl leading-relaxed mb-8">
-                Ready to start your surveying project? Our team is here to help you navigate from concept to completion with precision and expertise.
+                {hero.description || ''}
               </p>
               <Button 
-                onClick={() => navigate('/book-appointment')}
+                onClick={() => navigate(hero.cta_link || '/book-appointment')}
                 className="bg-accent hover:bg-accent/90 text-white font-mono uppercase tracking-widest px-8 py-6 text-sm"
               >
                 <Calendar className="w-5 h-5 mr-3" />
-                Request Appointment
+                {hero.cta_text || 'Request Appointment'}
               </Button>
             </div>
           </div>
@@ -116,9 +62,9 @@ const Contact = () => {
         <section className="py-16 bg-background border-b border-foreground/10">
           <div className="container mx-auto px-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {contactMethods.map((method) => (
-                <div key={method.title} className="p-6 border border-foreground/10 hover:border-accent transition-colors group">
-                  <method.icon className="w-8 h-8 text-accent mb-4 group-hover:scale-110 transition-transform" />
+              {contactMethods.map((method: any, i: number) => (
+                <div key={i} className="p-6 border border-foreground/10 hover:border-accent transition-colors group">
+                  <DynIcon name={method.icon} className="w-8 h-8 text-accent mb-4 group-hover:scale-110 transition-transform" />
                   <h3 className="font-mono text-xs text-foreground/40 tracking-widest uppercase mb-2">{method.title}</h3>
                   <div className="font-serif text-lg text-foreground mb-1">{method.primary}</div>
                   <div className="text-foreground/60 text-sm mb-2">{method.secondary}</div>
@@ -144,9 +90,9 @@ const Contact = () => {
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {offices.map((office) => (
-                <div key={office.city} className="bg-popover p-8 border border-foreground/10">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {offices.map((office: any, i: number) => (
+                <div key={i} className="bg-popover p-8 border border-foreground/10">
                   <div className="flex items-center gap-3 mb-4">
                     <MapPin className="w-5 h-5 text-accent" />
                     <div>
@@ -166,7 +112,7 @@ const Contact = () => {
             {/* Google Maps Embed - Ahmedabad Office */}
             <div className="mt-12 h-[400px] border border-foreground/10 overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.0427069847776!2d72.50860231496791!3d23.02505098494685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b2b0c0b0001%3A0x0!2sTitanium%20City%20Center!5e0!3m2!1sen!2sin!4v1640000000000!5m2!1sen!2sin"
+                src={officeMap.embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.0427069847776!2d72.50860231496791!3d23.02505098494685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b2b0c0b0001%3A0x0!2sTitanium%20City%20Center!5e0!3m2!1sen!2sin!4v1640000000000!5m2!1sen!2sin'}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -194,15 +140,15 @@ const Contact = () => {
               </div>
 
               <div className="space-y-6">
-                {faqs.map((faq, index) => (
+                {faqs.map((faq: any, index: number) => (
                   <div key={index} className="bg-popover border border-foreground/10 p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                         <MessageSquare className="w-4 h-4 text-accent" />
                       </div>
                       <div>
-                        <h4 className="font-serif text-lg text-foreground mb-3">{faq.q}</h4>
-                        <p className="text-foreground/60 leading-relaxed">{faq.a}</p>
+                        <h4 className="font-serif text-lg text-foreground mb-3">{faq.question}</h4>
+                        <p className="text-foreground/60 leading-relaxed">{faq.answer}</p>
                       </div>
                     </div>
                   </div>
@@ -213,23 +159,22 @@ const Contact = () => {
         </section>
 
         {/* Emergency Contact */}
+        {emergency.title && (
         <section className="py-16 bg-accent text-white">
           <div className="container mx-auto px-6">
             <div className="max-w-3xl mx-auto text-center">
-              <h3 className="font-serif text-2xl md:text-3xl mb-4">
-                Urgent Survey Requirement?
-              </h3>
-              <p className="text-white/80 mb-6">
-                For time-critical projects or emergency survey needs, call our priority line directly. We offer expedited services for urgent requirements.
-              </p>
+              <h3 className="font-serif text-2xl md:text-3xl mb-4">{emergency.title}</h3>
+              <p className="text-white/80 mb-6">{emergency.description}</p>
               <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/10 border border-white/20">
                 <Phone className="w-5 h-5" />
-                <span className="font-mono text-lg">+91 98765 00000</span>
-                <span className="font-mono text-xs opacity-70">24/7 Priority Line</span>
+                <span className="font-mono text-lg">{emergency.phone}</span>
+                <span className="font-mono text-xs opacity-70">{emergency.note}</span>
               </div>
             </div>
           </div>
         </section>
+        )}
+        <DynamicCTA pageKey="contact" fallback={{ heading: 'Ready to Map Your', headingAccent: 'Project?', subheading: 'Let our team know your needs and we will respond within 24 hours.', primaryText: 'Book Appointment', primaryLink: '/book-appointment' }} />
       </main>
 
       <Footer />
