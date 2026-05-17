@@ -166,6 +166,56 @@ export const PAGE_DEFAULTS: Record<string, ContentItem[]> = {
   portfolio: PORTFOLIO_DEFAULTS,
 };
 
+// ============ CONTACT PAGE ============
+export const CONTACT_DEFAULTS: ContentItem[] = [
+  { section_key: 'hero', order_index: 0, content: { subtitle: 'Get in Touch', title: "Let's Define Your", titleAccent: 'Coordinates', description: 'Ready to start your surveying project? Our team is here to help you navigate from concept to completion with precision and expertise.', cta_text: 'Request Appointment', cta_link: '/book-appointment' } },
+  { section_key: 'method', order_index: 1, content: { icon: 'Phone', title: 'Phone', primary: '+91 98765 43210', secondary: '+91 79 2658 1234', note: 'Available Mon-Sat, 9AM-7PM' } },
+  { section_key: 'method', order_index: 2, content: { icon: 'Mail', title: 'Email', primary: 'info@pruthvisurvey.com', secondary: 'projects@pruthvisurvey.com', note: 'Response within 24 hours' } },
+  { section_key: 'method', order_index: 3, content: { icon: 'MapPin', title: 'Head Office', primary: '402, Titanium City Center', secondary: '100 Feet Ring Road, Ahmedabad', note: 'Gujarat - 380015' } },
+  { section_key: 'method', order_index: 4, content: { icon: 'Clock', title: 'Working Hours', primary: 'Monday - Saturday', secondary: '9:00 AM - 7:00 PM', note: 'Sunday by appointment' } },
+  { section_key: 'office', order_index: 5, content: { city: 'Ahmedabad', type: 'Head Office', address: '402, Titanium City Center, 100 Feet Ring Road, Satellite, Ahmedabad - 380015', phone: '+91 79 2658 1234' } },
+  { section_key: 'office', order_index: 6, content: { city: 'Surat', type: 'Branch Office', address: 'B-201, Millennium Business Park, Majura Gate, Surat - 395002', phone: '+91 261 245 6789' } },
+  { section_key: 'office', order_index: 7, content: { city: 'Vadodara', type: 'Branch Office', address: '15, Shreeji Complex, Alkapuri, Vadodara - 390007', phone: '+91 265 234 5678' } },
+  { section_key: 'office_map', order_index: 8, content: { embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.0427069847776!2d72.50860231496791!3d23.02505098494685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9b2b0c0b0001%3A0x0!2sTitanium%20City%20Center!5e0!3m2!1sen!2sin!4v1640000000000!5m2!1sen!2sin' } },
+  { section_key: 'faq', order_index: 9, content: { question: 'What information do I need to request a quote?', answer: 'To provide an accurate quote, we need the type of survey, location, approximate area, any existing documents, and your timeline.' } },
+  { section_key: 'faq', order_index: 10, content: { question: 'How quickly can you start a project?', answer: 'For standard projects we begin field work within 3-5 business days. Rush projects can be accommodated with prior arrangement.' } },
+  { section_key: 'faq', order_index: 11, content: { question: 'Do you provide services outside Gujarat?', answer: 'Yes. Additional mobilization charges apply for locations outside Gujarat.' } },
+  { section_key: 'faq', order_index: 12, content: { question: 'What are your payment terms?', answer: '50% advance to commence work, balance on delivery. Milestone-based payments for larger projects.' } },
+  { section_key: 'emergency', order_index: 13, content: { title: 'Urgent Survey Requirement?', description: 'For time-critical projects or emergency survey needs, call our priority line directly. We offer expedited services for urgent requirements.', phone: '+91 98765 00000', note: '24/7 Priority Line' } },
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Ready to Map Your', heading_accent: 'Project?', subheading: 'Let our team know your needs and we will respond within 24 hours.', primary_text: 'Book Appointment', primary_link: '/book-appointment', secondary_text: '', secondary_link: '' } },
+];
+
+// ============ BOOK APPOINTMENT PAGE ============
+export const BOOK_DEFAULTS: ContentItem[] = [
+  { section_key: 'hero', order_index: 0, content: { subtitle: 'Book an Appointment', title: 'Schedule Your', titleAccent: 'Survey', description: "Choose your preferred date and time. We'll confirm within 24 hours." } },
+  { section_key: 'project_type', order_index: 1, content: { label: 'Topographical Survey', icon: '📍' } },
+  { section_key: 'project_type', order_index: 2, content: { label: 'Boundary Demarcation', icon: '🔲' } },
+  { section_key: 'project_type', order_index: 3, content: { label: 'DGPS Control Survey', icon: '📡' } },
+  { section_key: 'project_type', order_index: 4, content: { label: 'As-Built Survey', icon: '🏗️' } },
+  { section_key: 'project_type', order_index: 5, content: { label: 'Contour Mapping', icon: '🗺️' } },
+  { section_key: 'project_type', order_index: 6, content: { label: 'LiDAR Survey', icon: '🛰️' } },
+  { section_key: 'project_type', order_index: 7, content: { label: 'Drone Aerial Survey', icon: '✈️' } },
+  { section_key: 'project_type', order_index: 8, content: { label: 'Bathymetry Survey', icon: '🌊' } },
+  { section_key: 'project_type', order_index: 9, content: { label: 'Route Survey', icon: '🛤️' } },
+  { section_key: 'project_type', order_index: 10, content: { label: 'Other / Consultation', icon: '💬' } },
+  { section_key: 'time_slot', order_index: 11, content: { time: '09:00 AM' } },
+  { section_key: 'time_slot', order_index: 12, content: { time: '09:30 AM' } },
+  { section_key: 'time_slot', order_index: 13, content: { time: '10:00 AM' } },
+  { section_key: 'time_slot', order_index: 14, content: { time: '10:30 AM' } },
+  { section_key: 'time_slot', order_index: 15, content: { time: '11:00 AM' } },
+  { section_key: 'time_slot', order_index: 16, content: { time: '11:30 AM' } },
+  { section_key: 'time_slot', order_index: 17, content: { time: '02:00 PM' } },
+  { section_key: 'time_slot', order_index: 18, content: { time: '02:30 PM' } },
+  { section_key: 'time_slot', order_index: 19, content: { time: '03:00 PM' } },
+  { section_key: 'time_slot', order_index: 20, content: { time: '03:30 PM' } },
+  { section_key: 'time_slot', order_index: 21, content: { time: '04:00 PM' } },
+  { section_key: 'time_slot', order_index: 22, content: { time: '04:30 PM' } },
+  { section_key: 'time_slot', order_index: 23, content: { time: '05:00 PM' } },
+];
+
+PAGE_DEFAULTS.contact = CONTACT_DEFAULTS;
+PAGE_DEFAULTS.book = BOOK_DEFAULTS;
+
 // ============ SITE-WIDE (Header / Footer / Admin branding) ============
 export const SITE_DEFAULTS: ContentItem[] = [
   // Header / Brand
