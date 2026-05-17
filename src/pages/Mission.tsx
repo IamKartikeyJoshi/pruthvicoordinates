@@ -34,7 +34,6 @@ const Mission = () => {
   const journeyH = getFirst('journey_heading')?.content || { eyebrow: 'Our Journey', title: '34 Years of', title_accent: 'Excellence' };
   const teamH = getFirst('team_heading')?.content || { eyebrow: 'Leadership Team', title: 'The Experts', title_accent: 'Behind the Data' };
 
-  const iconMap: Record<string, any> = { Target, Clock, Award, Users, Shield, Compass };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden page-bg">
