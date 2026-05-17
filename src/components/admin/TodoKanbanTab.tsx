@@ -9,6 +9,7 @@ import {
   closestCorners, useDroppable, DragStartEvent, DragEndEvent
 } from '@dnd-kit/core';
 import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Todo {
   id: string;
@@ -40,7 +41,7 @@ export default function TodoKanbanTab() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ title: '', description: '', priority: 'medium', due_date: '' });
   const [activeId, setActiveId] = useState<string | null>(null);
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   const load = async () => {
     setLoading(true);
@@ -191,10 +192,12 @@ function KanbanColumn({ id, className, children }: { id: string; className?: str
 }
 
 function DraggableCard({ id, disabled, children }: { id: string; disabled?: boolean; children: React.ReactNode }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id, disabled });
+  const { attributes, listeners, setNodeRef, isDragging, transform } = useDraggable({ id, disabled });
+  const style = transform ? { transform: CSS.Translate.toString(transform), willChange: 'transform' as const } : undefined;
   return (
     <div
       ref={setNodeRef}
+      style={style}
       {...attributes}
       {...listeners}
       className={`bg-background border border-foreground/10 rounded p-3 group ${isDragging ? 'opacity-30' : ''} ${disabled ? '' : 'cursor-grab active:cursor-grabbing'}`}

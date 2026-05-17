@@ -2,23 +2,32 @@ import { useState, useEffect } from 'react';
 import { fetchSiteContent } from '@/lib/adminSession';
 import { PAGE_DEFAULTS, ContentItem } from '@/lib/defaultContent';
 
+const cache = new Map<string, ContentItem[]>();
+const inflight = new Map<string, Promise<any>>();
+
 export function useSiteContent(page: string) {
-  const [content, setContent] = useState<ContentItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState<ContentItem[]>(() => cache.get(page) || []);
+  const [loading, setLoading] = useState(!cache.has(page));
 
   useEffect(() => {
     let cancelled = false;
+    if (cache.has(page)) {
+      setContent(cache.get(page)!);
+      setLoading(false);
+      return;
+    }
     const load = async () => {
       setLoading(true);
-      const result = await fetchSiteContent(page);
+      let promise = inflight.get(page);
+      if (!promise) { promise = fetchSiteContent(page); inflight.set(page, promise); }
+      const result = await promise;
+      inflight.delete(page);
       if (cancelled) return;
-      
-      if (result.content && result.content.length > 0) {
-        setContent(result.content as ContentItem[]);
-      } else {
-        // Fall back to defaults
-        setContent(PAGE_DEFAULTS[page] || []);
-      }
+      const items = (result.content && result.content.length > 0)
+        ? (result.content as ContentItem[])
+        : (PAGE_DEFAULTS[page] || []);
+      cache.set(page, items);
+      setContent(items);
       setLoading(false);
     };
     load();
