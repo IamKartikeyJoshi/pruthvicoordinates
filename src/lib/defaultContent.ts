@@ -125,6 +125,8 @@ export const SERVICES_DEFAULTS: ContentItem[] = [
   { section_key: 'faq', order_index: 12, content: { question: 'What documents do I need to provide?', answer: 'We typically need your property deed/title documents, any existing survey plans, and revenue records (7/12 extract).' } },
   { section_key: 'faq', order_index: 13, content: { question: 'Are your surveys legally valid?', answer: 'Yes. All our surveys are conducted by government-licensed surveyors and comply with relevant regulations.' } },
   { section_key: 'faq', order_index: 14, content: { question: 'Do you work outside Gujarat?', answer: 'While our primary service area is Gujarat, we undertake projects across India for larger clients.' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Ready to Get', heading_accent: 'Started?', subheading: 'Tell us about your project and we will provide a detailed proposal within 24 hours.', primary_text: 'Request a Quote', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 // ============ PORTFOLIO PAGE ============
@@ -152,6 +154,8 @@ export const PORTFOLIO_DEFAULTS: ContentItem[] = [
   { section_key: 'testimonial', order_index: 16, content: { quote: 'Pruthvi Co-ordinates has been our go-to surveyor for over a decade. Their accuracy and professionalism are unmatched in the industry.', author: 'Rakesh Mehta', position: 'Project Director, L&T Infrastructure' } },
   { section_key: 'testimonial', order_index: 17, content: { quote: 'The boundary survey they conducted helped us resolve a long-standing dispute. Their documentation was accepted without question by the revenue tribunal.', author: 'Advocate Suresh Patel', position: 'Property Law Specialist' } },
   { section_key: 'testimonial', order_index: 18, content: { quote: 'Fast, accurate, and always available when we need them. We have relied on their surveys for all our township projects.', author: 'Nitin Shah', position: 'VP Operations, Goyal Group' } },
+  // CTA Block
+  { section_key: 'cta_section', order_index: 40, content: { eyebrow: '', heading: 'Your Project Could Be', heading_accent: 'Next', subheading: 'Join the hundreds of clients who trust Pruthvi Co-ordinates for their surveying needs.', primary_text: 'Start Your Project', primary_link: '/contact', secondary_text: '', secondary_link: '' } },
 ];
 
 export const PAGE_DEFAULTS: Record<string, ContentItem[]> = {
